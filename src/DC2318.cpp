@@ -48,16 +48,16 @@ unsigned char DC2318_Read(int leftPin, int rightPin){
     rightState = IR_Read(rightPin);
 
     if (leftState == 0 && rightState == 0) {
-        return 0;
+        return DC2318_NO_WALL;
     }
     if (leftState == 0 && rightState == 1) {
-        return 1;
+        return DC2318_LEFT_WALL;
     }
     if (leftState == 1 && rightState == 0) {
-        return 2;
+        return DC2318_RIGHT_WALL;
     }
     if (leftState == 1 && rightState == 1) {
-        return 3;
+        return DC2318_FRONT_WALL;
     }
-    return 4;
+    return DC2318_DETECTION_ERROR;
 }

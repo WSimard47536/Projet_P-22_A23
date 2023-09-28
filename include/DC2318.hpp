@@ -10,6 +10,12 @@
  */
 #pragma once
 
+#define DC2318_NO_WALL 0
+#define DC2318_LEFT_WALL 1
+#define DC2318_RIGHT_WALL 2
+#define DC2318_FRONT_WALL 3
+#define DC2318_DETECTION_ERROR 4
+
 /**
  * @brief Fonction that initialize a DC2318 sensor
  * 
