@@ -13,4 +13,4 @@
 void ROBUSMovement_moveStraight(float direction, float speed_pct, int distance_cm);
 void ROBUSMovement_turn(float direction, float speed_pct, int turnRadius_degreesPerWheelCycle, int turnDistance_degrees);
 void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turnDistance_degrees);
-void ROBUSMovement_stopMotors();
+void ROBUSMovement_stop();

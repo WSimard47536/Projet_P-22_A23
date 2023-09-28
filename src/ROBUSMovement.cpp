@@ -44,7 +44,7 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
   ROBUSMovement_stopMotors();
 }
 
-void ROBUSMovement_stopMotors()
+void ROBUSMovement_stop()
 {
   MOTOR_SetSpeed(LEFT_MOTOR, 0);
   MOTOR_SetSpeed(RIGHT_MOTOR, 0);
