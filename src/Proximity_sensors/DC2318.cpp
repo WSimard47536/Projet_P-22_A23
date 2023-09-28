@@ -9,8 +9,8 @@
  * @copyright Copyright (c) 2023
  * 
  */
-#include "InfraRed.hpp"
-#include "DC2318.hpp"
+#include "Proximity_sensors/InfraRed.hpp"
+#include "Proximity_sensors/DC2318.hpp"
 
 
 /**

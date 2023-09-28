@@ -10,7 +10,7 @@
  */
 #pragma once
 
-#include "DC2318.hpp"
+#include "Proximity_sensors/DC2318.hpp"
 
 #define LEFT_PIN 53
 #define RIGHT_PIN 49

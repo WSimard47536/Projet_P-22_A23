@@ -1,5 +1,5 @@
 #include "Arduino.h"
-#include "InfraRed.hpp"
+#include "Proximity_sensors/InfraRed.hpp"
 
 /**
  * @brief Initialize an infra red sensor
