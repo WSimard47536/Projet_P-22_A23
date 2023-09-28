@@ -26,5 +26,4 @@ typedef struct
   MazeRow rows[10];
 } Maze;
 
-
 void MazeSolver_algorithmicSolve();
