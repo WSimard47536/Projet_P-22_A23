@@ -12,7 +12,7 @@ void ROBUSMovement_moveStraight(float direction, float speed_pct, int distance_c
   MOTOR_SetSpeed(LEFT_MOTOR, 25);
   MOTOR_SetSpeed(RIGHT_MOTOR, 25);
   delay(2000);
-  ROBUSMovement_stopMotors();
+  ROBUSMovement_stop();
 }
 
 // direction : direction which to go (LEFT or RIGHT)
@@ -27,7 +27,7 @@ void ROBUSMovement_turn(float direction, float speed_pct, int turnRadius_degrees
   MOTOR_SetSpeed(LEFT_MOTOR, 0);
   MOTOR_SetSpeed(RIGHT_MOTOR, 25);
   delay(2000);
-  ROBUSMovement_stopMotors();
+  ROBUSMovement_stop();
 }
 
 // direction : direction which to go (LEFT or RIGHT)
@@ -41,7 +41,7 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
   MOTOR_SetSpeed(LEFT_MOTOR, 25);
   MOTOR_SetSpeed(RIGHT_MOTOR, -25);
   delay(2000);
-  ROBUSMovement_stopMotors();
+  ROBUSMovement_stop();
 }
 
 void ROBUSMovement_stop()
