@@ -1,6 +1,7 @@
 #include "ROBUSMovement.hpp"
 #include "ROBUSSensors.hpp"
 
+#include "WhistlesoundDetector.hpp"
 #include "WhistleDetector.hpp"
 #include "ObstacleDetector.hpp"
 
@@ -19,4 +20,8 @@ void loop()
       test_ROBUSMovement_moveStraight();
     #endif
   }
+
+  //compareBothNoises();
+  //delay(1000);
+
 }
