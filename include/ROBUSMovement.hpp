@@ -11,7 +11,10 @@
 #define DISTANCE_BT_WHEEL 0.196f // rayon entre les deux roues en metre 
 #define DIAMETER_WHEEL 0.076f // diametre de la roue (m)
 
-#define MAGIC 0.957//0.95
+#define MAGIC_lEFT 0.93
+#define MAGIC_RIGHT 0.94
+
+//0.9597
 
 #define CIRCUMFERENCE_ROBOT (3.1416*DISTANCE_BT_WHEEL*2)
 #define CIRCUMFERENCE_WHEEL (3.1416*DIAMETER_WHEEL)

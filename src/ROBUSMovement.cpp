@@ -23,53 +23,33 @@ void ROBUSMovement_moveStraight(float direction, float speed_pct, int distance_c
 
 void ROBUSMovement_turn(float direction, float speed_pct, int turnRadius_degreesPerWheelCycle, int turn_degrees) // à revoir
 {
-    //distance circulaire (arc)
-    float distance_arc = (CIRCUMFERENCE_ROBOT*turn_degrees)/360;
-    // nombre de pulse necesaire pour faire distance circulaire (arc) 
-    float total_pulse = (distance_arc*PMV/CIRCUMFERENCE_WHEEL); 
 
-    // facteur de correction
-    total_pulse = total_pulse * MAGIC;
-
-    if (direction == RIGHT_TURN){
-      ENCODER_Reset(LEFT_MOTOR);
-      ENCODER_Reset(RIGHT_MOTOR);
-      while(ENCODER_Read(LEFT_MOTOR) <= total_pulse){
-        MOTOR_SetSpeed(RIGHT_MOTOR, 0.10);
-        MOTOR_SetSpeed(LEFT_MOTOR, speed_pct);
-
-      if (ENCODER_Read(RIGHT_MOTOR)> 0){
-          int shift1 = ENCODER_Read(RIGHT_MOTOR);
-          while( 0 < shift1){
-          MOTOR_SetSpeed(RIGHT_MOTOR, -speed_pct );
-          shift1--;}}}}
-      
-    if (direction == LEFT_TURN){
-        ENCODER_Reset(RIGHT_MOTOR);
+  ENCODER_Reset(RIGHT_MOTOR);
         ENCODER_Reset(LEFT_MOTOR);
-        while(ENCODER_Read(RIGHT_MOTOR) <= total_pulse){
-          MOTOR_SetSpeed(LEFT_MOTOR, 0.10);
-          MOTOR_SetSpeed(RIGHT_MOTOR, speed_pct);
-         if (ENCODER_Read(LEFT_MOTOR)> 0){
-            int shift = ENCODER_Read(LEFT_MOTOR);
-            while( 0 < shift){
-            MOTOR_SetSpeed(LEFT_MOTOR, -speed_pct );
-            shift--;}}}
-      if (ENCODER_Read(RIGHT_MOTOR)== total_pulse){
-        MOTOR_SetSpeed(LEFT_MOTOR, speed_pct);
-        MOTOR_SetSpeed(RIGHT_MOTOR, 0);
+  //distance circulaire (arc)
+  float distance_arc = (CIRCUMFERENCE_ROBOT*turn_degrees)/360;
+  // nombre de pulse necesaire pour faire distance circulaire (arc) 
+  float total_pulse = (distance_arc*PMV/CIRCUMFERENCE_WHEEL); 
 
+  // facteur de correction
+  total_pulse = total_pulse;
+
+  if (direction == RIGHT_TURN){
+    while(ENCODER_Read(LEFT_MOTOR) <= total_pulse*MAGIC_RIGHT){
+      MOTOR_SetSpeed(RIGHT_MOTOR, -speed_pct);
+      MOTOR_SetSpeed(LEFT_MOTOR, speed_pct);
       }
-    } 
+  }
+      
+  if (direction == LEFT_TURN){
+        while(ENCODER_Read(RIGHT_MOTOR) <= total_pulse*MAGIC_lEFT){
+          MOTOR_SetSpeed(LEFT_MOTOR, -speed_pct);
+          MOTOR_SetSpeed(RIGHT_MOTOR, speed_pct);
+        }
+  }
 
     ROBUSMovement_stop();
 
-   /* // test pour jeudi
-    MOTOR_SetSpeed(LEFT_MOTOR, 0);
-    MOTOR_SetSpeed(RIGHT_MOTOR, 25);
-    delay(2000);
-    ROBUSMovement_stop();*/
-  
 }
 
 
