@@ -1,18 +1,51 @@
 #include "ROBUSMovement.hpp"
 
+
+int totalPulsesLeft = 0;
+int totalPulsesRight = 0;
+
 // direction : direction which to go (FOWARD or BACKWARD)
 // speed_pct : speed as a percentage
 // distance_cm : distance in centimeters
-void ROBUSMovement_moveStraight(float direction, float speed_pct, int distance_cm)
+void ROBUSMovement_moveStraight(float direction, float speed_pct, float distance_cm)
 {
-  // à coder
-  // indice : la vitesse finale sera égale à (direction * speed_pct / 100)
+  ENCODER_Reset(LEFT_ENCODER);
+  ENCODER_Reset(RIGHT_ENCODER);
 
-  // test pour jeudi
-  MOTOR_SetSpeed(LEFT_MOTOR, 25);
-  MOTOR_SetSpeed(RIGHT_MOTOR, 25);
-  delay(2000);
+  float rotations= distance_cm / CIRCUMFERENCE;
+
+  MOTOR_SetSpeed(LEFT_MOTOR, speed_pct / 100);
+  MOTOR_SetSpeed(RIGHT_MOTOR, speed_pct / 100);
+
+  while ((float)ENCODER_Read(LEFT_ENCODER) <= rotations*FULL_ROTATIONS_PULSES)
+  {
+    ROBUSMovement_adjustDirection(100, 50);
+  }
+
   ROBUSMovement_stop();
+
+ /* Serial.println("Gauche : ");
+  Serial.println(ENCODER_Read(LEFT_ENCODER));
+  Serial.println("Droite : ");
+  Serial.println(ENCODER_Read(RIGHT_ENCODER));
+
+  totalPulsesLeft += abs(ENCODER_Read(LEFT_ENCODER));
+  totalPulsesRight += abs(ENCODER_Read(RIGHT_ENCODER));
+
+  ENCODER_Reset(RIGHT_ENCODER);
+  if (abs(totalPulsesLeft - totalPulsesRight) >= 10)
+  {
+    int test = totalPulsesRight;
+    while (test >= totalPulsesLeft)
+    {
+      test -= abs(ENCODER_ReadReset(RIGHT_ENCODER));
+      MOTOR_SetSpeed(RIGHT_ENCODER, -0.1f);
+
+      Serial.println("Droite : ");
+      Serial.println(test);
+    }
+    ROBUSMovement_stop();
+  }*/
 }
 
 // direction : direction which to go (LEFT or RIGHT)
@@ -48,4 +81,26 @@ void ROBUSMovement_stop()
 {
   MOTOR_SetSpeed(LEFT_MOTOR, 0);
   MOTOR_SetSpeed(RIGHT_MOTOR, 0);
+}
+
+/**
+ * @brief This fonction adjust the power from an under performing motor by reducing
+ * the output of the stronger one
+ * 
+ * @param speed_pct  Speed of the motors up to 100
+ * @param delay_ms  Delay before evaluating the If/ Else if
+ */
+void ROBUSMovement_adjustDirection(float speed_pct, int delay_ms)
+{
+ int leftEncoderCount= ENCODER_Read(LEFT_ENCODER);
+ int rightEncoderCount= ENCODER_Read(RIGHT_ENCODER);
+ if (abs(leftEncoderCount) > abs(rightEncoderCount))
+ {
+    MOTOR_SetSpeed(LEFT_MOTOR, 0.197);
+ }
+ else if (abs(leftEncoderCount) < abs(rightEncoderCount))
+ {
+    MOTOR_SetSpeed(LEFT_MOTOR, 0.201);
+ }
+ 
 }
