@@ -7,7 +7,7 @@
  * Define that sets at which speed the robot starts.
  * This cannot be 0 because otherwise the robot wont ever move.
  */
-#define START_SPEED_OFFSET 0.1
+#define START_SPEED_OFFSET 0.05
 
 /**
  * @brief This function's use is to calculate the wanted speed
@@ -22,6 +22,13 @@
  * @param distanceLeft 
  * a ratio from 0 to 1 that indicates how close the robot is
  * to reaching its destination.
+ * @param totalDistance
+ * this parameter is used to tune the acceleration depending on the
+ * total distance there is to do. If the distance is too short,
+ * the acceleration would be instant and if its too long, it would
+ * simply be super slow. This should theorically base the speed itself.
+ * @param maximumSpeed 
+ * a ratio from 0 to 1 that indicates how fast the wheel should get.
  * @return float 
  */
-float ROBUS_GetSpeedFactorFromCurrentPosition(float distanceLeft);
+float ROBUS_GetSpeedFactorFromCurrentPosition(float distanceLeft, float totalDistance, float maximumSpeed);
