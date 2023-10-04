@@ -100,7 +100,7 @@ void ROBUSMovement_adjustDirection(float speed_pct, int delay_ms)
  }
  else if (abs(leftEncoderCount) < abs(rightEncoderCount))
  {
-    MOTOR_SetSpeed(LEFT_MOTOR, 0.201);
+    MOTOR_SetSpeed(LEFT_MOTOR, 0.2015);
  }
  
 }
