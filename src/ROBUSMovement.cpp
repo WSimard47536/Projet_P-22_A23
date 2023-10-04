@@ -25,27 +25,31 @@ void ROBUSMovement_turn(float direction, float speed_pct, int turnRadius_degrees
 {
 
   ENCODER_Reset(RIGHT_MOTOR);
-        ENCODER_Reset(LEFT_MOTOR);
+  ENCODER_Reset(LEFT_MOTOR);
   //distance circulaire (arc)
-  float distance_arc = (CIRCUMFERENCE_ROBOT*turn_degrees)/360;
+  float large_rotation = (LARGE_CIRCUMFERENCE_ROBOT*turn_degrees)/360;
+  float small_rotation = (SMALL_CIRCUMFERENCE_ROBOT*turn_degrees)/360;
+  
   // nombre de pulse necesaire pour faire distance circulaire (arc) 
-  float total_pulse = (distance_arc*PMV/CIRCUMFERENCE_WHEEL); 
+  float large_turn_pulse = (large_rotation*ROTATION_PULSE/CIRCUMFERENCE_WHEEL);  
+  float small_turn_pulse = (small_rotation*ROTATION_PULSE/CIRCUMFERENCE_WHEEL); 
+  // vitesse des moteurs fct arc
+  float slow_speed = (speed_pct*small_rotation)/large_rotation;
 
-  // facteur de correction
-  total_pulse = total_pulse;
-
+  // tournant droite
   if (direction == RIGHT_TURN){
-    while(ENCODER_Read(LEFT_MOTOR) <= total_pulse*MAGIC_RIGHT){
-      MOTOR_SetSpeed(RIGHT_MOTOR, -speed_pct);
+    //rajouter de contrainte ?
+    while(ENCODER_Read(LEFT_MOTOR) <= large_turn_pulse*MAGIC_RIGHT){
+      MOTOR_SetSpeed(RIGHT_MOTOR, slow_speed);
       MOTOR_SetSpeed(LEFT_MOTOR, speed_pct);
       }
   }
-      
+  // tournant gauche
   if (direction == LEFT_TURN){
-        while(ENCODER_Read(RIGHT_MOTOR) <= total_pulse*MAGIC_lEFT){
-          MOTOR_SetSpeed(LEFT_MOTOR, -speed_pct);
-          MOTOR_SetSpeed(RIGHT_MOTOR, speed_pct);
-        }
+    while(ENCODER_Read(RIGHT_MOTOR) <= large_turn_pulse*MAGIC_lEFT){
+      MOTOR_SetSpeed(LEFT_MOTOR, slow_speed);
+      MOTOR_SetSpeed(RIGHT_MOTOR, speed_pct);
+      }
   }
 
     ROBUSMovement_stop();
