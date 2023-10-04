@@ -10,6 +10,14 @@
 #define START_SPEED_OFFSET 0.05
 
 /**
+ * @brief define that defines at which rotation
+ * count should the ratio of speed reach the maximum
+ * speed of 1. By default, is set to 10000 encoder turns
+ * or 1 meters in distance.
+ */
+#define MAX_SPEED_AT_THIS_DISTANCE 10000
+
+/**
  * @brief This function's use is to calculate the wanted speed
  * factor depending on how much distance is left to move to
  * reach its wanted destination. This allows the robot to perform

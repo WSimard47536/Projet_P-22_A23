@@ -45,14 +45,14 @@ float ROBUS_GetSpeedFactorFromCurrentPosition(float distanceLeft, float totalDis
   Serial.println(totalDistance);
 
   // Adjusts the speeds according to the total distance we need to make
-  if (totalDistance > 10000)
+  if (totalDistance > MAX_SPEED_AT_THIS_DISTANCE)
   {
     maximumSpeed = 1;
   }
   else
   {
-    float distanceRatio = totalDistance/10000;
-    maximumSpeed = distanceRatio + 0.1;
+    float distanceRatio = totalDistance/MAX_SPEED_AT_THIS_DISTANCE;
+    maximumSpeed = distanceRatio + START_SPEED_OFFSET;
   }
 
   /**
