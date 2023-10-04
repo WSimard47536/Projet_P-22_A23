@@ -13,10 +13,15 @@ void setup()
 
 void loop()
 {
-  if (ROBUS_IsBumper(REAR_BUMPER))
-  {
-    #ifdef ISTEST
-      test_ROBUSMovement_moveStraight();
-    #endif
-  }
+  //if (ROBUS_IsBumper(REAR_BUMPER))
+  //{
+  //  #ifdef ISTEST
+  //    test_ROBUSMovement_moveStraight();
+  //  #endif
+  //}
+
+  
+  //ROBUSMovement_turnOnSelf(1, 0.10, 1080);
+  //delay(5000);
+  
 }
