@@ -16,7 +16,7 @@
 #define CIRCUMFERENCE 23.87f
 #define FULL_ROTATIONS_PULSES 3200.00f
 
-void ROBUSMovement_adjustDirection(float speed_pct, int delay_ms, float distanceRatio);
+void ROBUSMovement_adjustDirection(float speed_pct, int delay_ms, float distanceRatio, float totalDistance);
 void ROBUSMovement_moveStraight(float direction, float speed_pct, float distance_cm);
 void ROBUSMovement_turn(float direction, float speed_pct, int turnRadius_degreesPerWheelCycle, int turnDistance_degrees);
 void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turnDistance_degrees);
