@@ -14,12 +14,24 @@ void ROBUSMovement_moveStraight(float direction, float speed_pct, float distance
 
   float rotations= distance_cm / CIRCUMFERENCE;
 
+  /**
+   * @brief Keeps track of how close we are to reaching the wanted
+   * distance. This value will range from 0 to 1.
+   */
+  float distanceRatio = 0;
+
+  float currentRotations = 0;
+  float wantedRotations = rotations*FULL_ROTATIONS_PULSES;
+
   MOTOR_SetSpeed(LEFT_MOTOR, speed_pct / 100);
   MOTOR_SetSpeed(RIGHT_MOTOR, speed_pct / 100);
 
-  while ((float)ENCODER_Read(LEFT_ENCODER) <= rotations*FULL_ROTATIONS_PULSES)
+  while (currentRotations <= wantedRotations)
   {
-    ROBUSMovement_adjustDirection(100, 50);
+    currentRotations = (float)ENCODER_Read(LEFT_ENCODER);
+    distanceRatio = currentRotations / wantedRotations;
+
+    ROBUSMovement_adjustDirection(speed_pct, 50, distanceRatio);
   }
 
   ROBUSMovement_stop();
@@ -90,17 +102,21 @@ void ROBUSMovement_stop()
  * @param speed_pct  Speed of the motors up to 100
  * @param delay_ms  Delay before evaluating the If/ Else if
  */
-void ROBUSMovement_adjustDirection(float speed_pct, int delay_ms)
+void ROBUSMovement_adjustDirection(float speed_pct, int delay_ms, float distanceRatio)
 {
- int leftEncoderCount= ENCODER_Read(LEFT_ENCODER);
- int rightEncoderCount= ENCODER_Read(RIGHT_ENCODER);
- if (abs(leftEncoderCount) > abs(rightEncoderCount))
- {
-    MOTOR_SetSpeed(LEFT_MOTOR, 0.197);
- }
- else if (abs(leftEncoderCount) < abs(rightEncoderCount))
- {
-    MOTOR_SetSpeed(LEFT_MOTOR, 0.2015);
- }
+  int leftEncoderCount= ENCODER_Read(LEFT_ENCODER);
+  int rightEncoderCount= ENCODER_Read(RIGHT_ENCODER);
+
+  float speedRatio = speed_pct/100;
+  float speedFactor = ROBUS_GetSpeedFactorFromCurrentPosition(distanceRatio) * speed_pct;
+
+  if (abs(leftEncoderCount) > abs(rightEncoderCount))
+  {
+    MOTOR_SetSpeed(LEFT_MOTOR, speedRatio*0.197*speedFactor);
+  }
+  else if (abs(leftEncoderCount) < abs(rightEncoderCount))
+  {
+    MOTOR_SetSpeed(LEFT_MOTOR, speedRatio*0.2015*speedFactor);
+  }
  
 }
