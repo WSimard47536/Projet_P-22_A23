@@ -18,20 +18,20 @@ void loop()
     #ifdef ISTEST
      // test_ROBUSMovement_moveStraight();
     #endif
-    ROBUSMovement_moveStraight(FORWARD, 20, 50.00f);
+    ROBUSMovement_moveStraight(FORWARD, 75, 10.00f);
     delay(2000);
-    ROBUSMovement_moveStraight(FORWARD, 20, 50.00f);
+    ROBUSMovement_moveStraight(FORWARD, 75, 20.00f);
     delay(2000);
-    ROBUSMovement_moveStraight(FORWARD, 20, 50.00f);
+    ROBUSMovement_moveStraight(FORWARD, 75, 30.00f);
     delay(2000);
-    ROBUSMovement_moveStraight(FORWARD, 20, 50.00f);
+    ROBUSMovement_moveStraight(FORWARD, 75, 40.00f);
     delay(2000);
-    ROBUSMovement_moveStraight(FORWARD, 20, 50.00f);
+    ROBUSMovement_moveStraight(FORWARD, 75, 50.00f);
     delay(2000);
-    ROBUSMovement_moveStraight(FORWARD, 20, 50.00f);
+    ROBUSMovement_moveStraight(FORWARD, 75, 60.00f);
     delay(2000);
-    ROBUSMovement_moveStraight(FORWARD, 20, 50.00f);
+    ROBUSMovement_moveStraight(FORWARD, 75, 70.00f);
     delay(2000);
-    ROBUSMovement_moveStraight(FORWARD, 20, 50.00f);
+    ROBUSMovement_moveStraight(FORWARD, 75, 80.00f);
   }
 }
