@@ -15,9 +15,16 @@
  * @param distanceLeft 
  * a ratio from 0 to 1 that indicates how close the robot is
  * to reaching its destination.
+ * @param totalDistance
+ * this parameter is used to tune the acceleration depending on the
+ * total distance there is to do. If the distance is too short,
+ * the acceleration would be instant and if its too long, it would
+ * simply be super slow. This should theorically base the speed itself.
+ * @param maximumSpeed 
+ * a ratio from 0 to 1 that indicates how fast the wheel should get.
  * @return float 
  */
-float ROBUS_GetSpeedFactorFromCurrentPosition(float distanceLeft)
+float ROBUS_GetSpeedFactorFromCurrentPosition(float distanceLeft, float totalDistance, float maximumSpeed)
 {
   #pragma region -ERROR_CASES-
   if(distanceLeft > 1)
@@ -35,6 +42,19 @@ float ROBUS_GetSpeedFactorFromCurrentPosition(float distanceLeft)
 
   #pragma region -SPEED COMPENSATION-
 
+  Serial.println(totalDistance);
+
+  // Adjusts the speeds according to the total distance we need to make
+  if (totalDistance > 10000)
+  {
+    maximumSpeed = 1;
+  }
+  else
+  {
+    float distanceRatio = totalDistance/10000;
+    maximumSpeed = distanceRatio + 0.1;
+  }
+
   /**
    * @brief allows the sin operator to
    * make a bell curve of the wanted speed
@@ -43,7 +63,9 @@ float ROBUS_GetSpeedFactorFromCurrentPosition(float distanceLeft)
    */
   float radians = distanceLeft * 3.14f;
 
-  return START_SPEED_OFFSET + sin(radians);
+  //float fixedSin = pow(sin(radians), 3);
+
+  return (sin(radians) * maximumSpeed) + START_SPEED_OFFSET;
 
   #pragma endregion
 }
