@@ -31,7 +31,7 @@ void ROBUSMovement_moveStraight(float direction, float speed_pct, float distance
     currentRotations = (float)ENCODER_Read(LEFT_ENCODER);
     distanceRatio = currentRotations / wantedRotations;
 
-    ROBUSMovement_adjustDirection(speed_pct, 50, distanceRatio);
+    ROBUSMovement_adjustDirection(speed_pct, 50, distanceRatio, wantedRotations);
   }
 
   ROBUSMovement_stop();
@@ -102,21 +102,27 @@ void ROBUSMovement_stop()
  * @param speed_pct  Speed of the motors up to 100
  * @param delay_ms  Delay before evaluating the If/ Else if
  */
-void ROBUSMovement_adjustDirection(float speed_pct, int delay_ms, float distanceRatio)
+void ROBUSMovement_adjustDirection(float speed_pct, int delay_ms, float distanceRatio, float totalDistance)
 {
   int leftEncoderCount= ENCODER_Read(LEFT_ENCODER);
   int rightEncoderCount= ENCODER_Read(RIGHT_ENCODER);
 
   float speedRatio = speed_pct/100;
-  float speedFactor = ROBUS_GetSpeedFactorFromCurrentPosition(distanceRatio) * speed_pct;
+  float speedFactor = ROBUS_GetSpeedFactorFromCurrentPosition(distanceRatio, totalDistance, speedRatio);
 
+  //Serial.println(speedRatio);
+
+  MOTOR_SetSpeed(RIGHT_MOTOR, speedFactor);
+  MOTOR_SetSpeed(LEFT_MOTOR, speedFactor);
+  /*
   if (abs(leftEncoderCount) > abs(rightEncoderCount))
   {
-    MOTOR_SetSpeed(LEFT_MOTOR, speedRatio*0.197*speedFactor);
+    MOTOR_SetSpeed(LEFT_MOTOR, speedFactor*0.197);
   }
   else if (abs(leftEncoderCount) < abs(rightEncoderCount))
   {
-    MOTOR_SetSpeed(LEFT_MOTOR, speedRatio*0.2015*speedFactor);
+    MOTOR_SetSpeed(LEFT_MOTOR, speedFactor*0.2015);
   }
+  */
  
 }
