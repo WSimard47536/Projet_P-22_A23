@@ -43,12 +43,22 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
 {
   Serial.println("Début tourner");
   
+  ////// ROBOT A ///////
+  //////////////////////
+  //à modifier selon tests
+  //float Kc = 0.0007;
+  //float Ti = 900;
+  //float Kd = 0.925; //90°
+  //////////////////////
+
+
+  ////// ROBOT B ///////
+  //////////////////////
   //à modifier selon tests
   float Kc = 0.0007;
-  //float Ti = 1000;
-  //float Kd = 1.009;
   float Ti = 900;
-  float Kd = 0.97;
+  float Kd = 0.9280; //90°
+  //////////////////////
 
   float degrees = turn_degrees * Kd;
   float distance_between_wheels = 18.6;
@@ -60,8 +70,8 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
   int cycle = 1;
   float erreur_integrale = 0;
 
-  MOTOR_SetSpeed(RIGHT_MOTOR, (speed_pct));
-  MOTOR_SetSpeed(LEFT_MOTOR, -(speed_pct));
+  MOTOR_SetSpeed(RIGHT_MOTOR, (-1*direction*speed_pct));
+  MOTOR_SetSpeed(LEFT_MOTOR, (direction*speed_pct));
 
   int tourne = 1;
 
@@ -75,7 +85,7 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
 
   //Timing
   float temps_derniere_intervalle = 0;
-  float intervalle = 100;
+  float intervalle = 50;
   
   //Reset
   ENCODER_ReadReset(1);
@@ -85,8 +95,8 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
   while(tourne == 1){
     
 
-    uint32_t right = ENCODER_Read(1);
-    uint32_t left = abs(ENCODER_Read(0));
+    uint32_t right = abs(ENCODER_Read(1));
+    uint32_t left  = abs(ENCODER_Read(0));
     
     float temps_actuel = millis();
     if ((temps_actuel - temps_derniere_intervalle) > intervalle){
