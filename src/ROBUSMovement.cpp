@@ -44,13 +44,15 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
   Serial.println("Début tourner");
   
   //à modifier selon tests
-  float Kc = 0.0002;
-  float Ti = 50;
+  float Kc = 0.0007;
+  //float Ti = 1000;
+  //float Kd = 1.009;
+  float Ti = 900;
   float Kd = 0.97;
 
   float degrees = turn_degrees * Kd;
   float distance_between_wheels = 18.6;
-  float wheel_size = 7.6;
+  float wheel_size = 7.62;
 
   int wanted_movement = ROBUSMovement_turnOnSelf_math(distance_between_wheels, wheel_size, degrees);
 
@@ -88,8 +90,8 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
     
     float temps_actuel = millis();
     if ((temps_actuel - temps_derniere_intervalle) > intervalle){
-      float nouvelle_vitesse = -1 * PID(Kc, Ti, right, left, cycle, temps_debut, temps_actuel, speed_pct, &erreur_integrale);
-      if (!(nouvelle_vitesse < -1) && !(nouvelle_vitesse > 1)){
+      float nouvelle_vitesse = direction * PID(Kc, Ti, right, left, cycle, temps_debut, temps_actuel, speed_pct, &erreur_integrale);
+      if (!(nouvelle_vitesse < -0.4) && !(nouvelle_vitesse > 0.4)){
         MOTOR_SetSpeed(LEFT_MOTOR, nouvelle_vitesse);
       }
       else {
@@ -135,16 +137,16 @@ float PID(float Kc, float Ti, float set_point, float process_variable, int nbr_c
 
   float speedLeft = Ubias + Kc*erreur + Ki*(*erreur_integrale);
 
-  //Serial.print("right : ");
-  //Serial.println(set_point);
-  //Serial.print("left: ");
-  //Serial.println(process_variable);
-  //Serial.print("erreur: ");
-  //Serial.println(erreur);
-  //Serial.print("erreur integrale: ");
-  //Serial.println(*erreur_integrale);
-  //Serial.print("delta T: ");
-  //Serial.println(delta_T);
+  Serial.print("right : ");
+  Serial.println(set_point);
+  Serial.print("left: ");
+  Serial.println(process_variable);
+  Serial.print("erreur: ");
+  Serial.println(erreur);
+  Serial.print("erreur integrale: ");
+  Serial.println(*erreur_integrale);
+  Serial.print("delta T: ");
+  Serial.println(delta_T);
 
   return speedLeft;
 

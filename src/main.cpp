@@ -21,7 +21,8 @@ void loop()
   //}
 
   
+  ROBUSMovement_turnOnSelf(-1, 0.10, 90);
   //ROBUSMovement_turnOnSelf(1, 0.10, 1080);
-  //delay(5000);
+  delay(2000);
   
 }
