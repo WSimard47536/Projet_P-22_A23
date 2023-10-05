@@ -1,5 +1,8 @@
 #pragma once
 
+#define MAZE_NUMBER_OF_ROWS 10
+#define MAZE_NUMBER_OF_COLUMNS 3
+
 #ifdef ROBOTA
   #define ROBOT_OFFSET 0
 #else
@@ -8,19 +11,30 @@
     #endif
 #endif
 
+typedef struct
+{
+  int direction;
+  int speed_pct;
+  int distance_cm;
+} Move;
+
 typedef struct 
 {
-  bool canGoLeft = true;
-  bool canGoRight = true;
-  bool canGoFoward = true;
-  bool canGoBackward = true;
+  bool canGoLeft;
+  bool canGoRight;
+  bool canGoFoward;
+  bool canGoBackward;
 } MazePosition;
 
 typedef struct
 {
-  MazePosition positions[10][3];
+  MazePosition positions[MAZE_NUMBER_OF_ROWS][MAZE_NUMBER_OF_COLUMNS];
 } Maze;
 
 void MazeSolver_init();
+void MazeSolver_setBaseMaze();
+
 void MazeSolver_setObstacle(int row, int column);
-void MazeSolver_algorithmicSolve();
+Move MazeSolver_getNextMove();
+
+bool MazeSolver_canGoFoward();
