@@ -1,6 +1,6 @@
 #include "ROBUSMovement.hpp"
 #include "ROBUSSensors.hpp"
-
+#include "WhistlesoundDetector.hpp"
 #include "WhistleDetector.hpp"
 #include "ObstacleDetector.hpp"
 
@@ -9,6 +9,7 @@
 void setup()
 {
   BoardInit();
+  InitializeProximitySensors();
 }
 
 void loop()
