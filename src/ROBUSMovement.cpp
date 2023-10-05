@@ -2,18 +2,11 @@
 #include "math.h"
 #define constanteRatio 100
 
-
-int totalPulsesLeft = 0;
-int totalPulsesRight = 0;
-
 void ROBUSMovement_stop()
 {
   MOTOR_SetSpeed(LEFT_MOTOR, 0);
   MOTOR_SetSpeed(RIGHT_MOTOR, 0);
 }
-
-int totalPulsesLeft = 0;
-int totalPulsesRight = 0;
 
 // direction : direction which to go (FOWARD or BACKWARD)
 // speed_pct : speed as a percentage
@@ -46,37 +39,12 @@ void ROBUSMovement_moveStraight(float direction, float speed_pct, float distance
   }
 
   ROBUSMovement_stop();
-
- /* Serial.println("Gauche : ");
-  Serial.println(ENCODER_Read(LEFT_ENCODER));
-  Serial.println("Droite : ");
-  Serial.println(ENCODER_Read(RIGHT_ENCODER));
-
-  totalPulsesLeft += abs(ENCODER_Read(LEFT_ENCODER));
-  totalPulsesRight += abs(ENCODER_Read(RIGHT_ENCODER));
-
-  ENCODER_Reset(RIGHT_ENCODER);
-  if (abs(totalPulsesLeft - totalPulsesRight) >= 10)
-  {
-    int test = totalPulsesRight;
-    while (test >= totalPulsesLeft)
-    {
-      test -= abs(ENCODER_ReadReset(RIGHT_ENCODER));
-      MOTOR_SetSpeed(RIGHT_ENCODER, -0.1f);
-
-      Serial.println("Droite : ");
-      Serial.println(test);
-    }
-    ROBUSMovement_stop();
-  }*/
 }
 
 // direction : direction which to go (LEFT or RIGHT)
 // speed_pct : speed as a percentage
 // turnRadius_degrees : turn wideness in degrees per wheel turn
 // turn_degrees : turn in degrees
-
-
 void ROBUSMovement_turn(float direction, float speed_pct, int turnRadius_degreesPerWheelCycle, int turn_degrees) // à revoir
 {
 
@@ -126,10 +94,4 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
   MOTOR_SetSpeed(RIGHT_MOTOR, -25);
   delay(2000);
   ROBUSMovement_stop();
-}
-
-void ROBUSMovement_stop()
-{
-  MOTOR_SetSpeed(LEFT_MOTOR, 0);
-  MOTOR_SetSpeed(RIGHT_MOTOR, 0);
 }
