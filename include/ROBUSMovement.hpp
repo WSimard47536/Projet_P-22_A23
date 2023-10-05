@@ -8,8 +8,8 @@
 #define RIGHT_TURN -1.0f
 
 #define FULL_ROTATIONS_PULSES 3200 // 
-#define DISTANCE_BT_WHEEL 0.196f // rayon entre les deux roues en metre 
-#define DIAMETER_WHEEL 0.076f // diametre de la roue (m)
+#define DISTANCE_BT_WHEEL 19.6f // rayon entre les deux roues en cm 
+#define DIAMETER_WHEEL 7.6f // diametre de la roue (cm)
 
 #define MAGIC_lEFT 0.93
 #define MAGIC_RIGHT 0.94
