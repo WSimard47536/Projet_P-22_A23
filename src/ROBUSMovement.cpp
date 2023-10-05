@@ -96,11 +96,6 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
   ROBUSMovement_stop();
 }
 
-void ROBUSMovement_stop()
-{
-  MOTOR_SetSpeed(LEFT_MOTOR, 0);
-  MOTOR_SetSpeed(RIGHT_MOTOR, 0);
-}
 
 /**
  * @brief This fonction adjust the power from an under performing motor by reducing
