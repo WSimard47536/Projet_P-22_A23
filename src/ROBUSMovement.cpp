@@ -1,4 +1,5 @@
 #include "ROBUSMovement.hpp"
+#define constanteRatio 100
 
 
 int totalPulsesLeft = 0;
@@ -109,6 +110,14 @@ void ROBUSMovement_adjustDirection(float speed_pct, int delay_ms, float distance
 
   float speedRatio = speed_pct/100;
   float speedFactor = ROBUS_GetSpeedFactorFromCurrentPosition(distanceRatio, totalDistance, speedRatio);
+
+  float offset = leftEncoderCount - rightEncoderCount;
+  float offsetRatio = offset/constanteRatio;
+  offsetRatio= 1-offsetRatio;
+  
+
+
+
 
   //Serial.println(speedRatio);
 
