@@ -42,7 +42,7 @@ float ROBUS_GetSpeedFactorFromCurrentPosition(float distanceLeft, float totalDis
 
   #pragma region -SPEED COMPENSATION-
 
-  Serial.println(totalDistance);
+  //Serial.println(totalDistance);
 
   // Adjusts the speeds according to the total distance we need to make
   if (totalDistance > MAX_SPEED_AT_THIS_DISTANCE)

@@ -1,5 +1,5 @@
 #include "ROBUSMovement.hpp"
-#define constanteRatio 100
+#define CONSTANTE_RATIO 1000
 
 
 int totalPulsesLeft = 0;
@@ -105,6 +105,7 @@ void ROBUSMovement_stop()
  */
 void ROBUSMovement_adjustDirection(float speed_pct, int delay_ms, float distanceRatio, float totalDistance)
 {
+  static int maxOffset = 0;
   int leftEncoderCount= ENCODER_Read(LEFT_ENCODER);
   int rightEncoderCount= ENCODER_Read(RIGHT_ENCODER);
 
@@ -112,17 +113,22 @@ void ROBUSMovement_adjustDirection(float speed_pct, int delay_ms, float distance
   float speedFactor = ROBUS_GetSpeedFactorFromCurrentPosition(distanceRatio, totalDistance, speedRatio);
 
   float offset = leftEncoderCount - rightEncoderCount;
-  float offsetRatio = offset/constanteRatio;
-  offsetRatio= 1-offsetRatio;
-  
+  float offsetRatio = offset/CONSTANTE_RATIO;
+  //offsetRatio= 1-offsetRatio;
+
+
+ /* if (abs(offset) > maxOffset)
+  {
+    maxOffset = abs(offset);
+    Serial.println(maxOffset);
+  }*/
 
 
 
+  Serial.println(offsetRatio);
 
-  //Serial.println(speedRatio);
-
-  MOTOR_SetSpeed(RIGHT_MOTOR, speedFactor);
-  MOTOR_SetSpeed(LEFT_MOTOR, speedFactor);
+  MOTOR_SetSpeed(RIGHT_MOTOR, offsetRatio+speedFactor);
+  MOTOR_SetSpeed(LEFT_MOTOR, -offsetRatio+speedFactor);
   /*
   if (abs(leftEncoderCount) > abs(rightEncoderCount))
   {
