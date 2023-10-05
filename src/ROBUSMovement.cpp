@@ -1,20 +1,22 @@
 #include "ROBUSMovement.hpp"
 #include "math.h"
+#define constanteRatio 100
 
-int totalPulsesLeft = 0;
-int totalPulsesRight = 0;
+void ROBUSMovement_stop()
+{
+  MOTOR_SetSpeed(LEFT_MOTOR, 0);
+  MOTOR_SetSpeed(RIGHT_MOTOR, 0);
+}
 
 // direction : direction which to go (FOWARD or BACKWARD)
 // speed_pct : speed as a percentage
 // distance_cm : distance in centimeters
-
-void ROBUSMovement_moveStraight(float direction, float speed_pct, float distance_cm);
 void ROBUSMovement_moveStraight(float direction, float speed_pct, float distance_cm)
 {
-  ENCODER_Reset(LEFT);
-  ENCODER_Reset(RIGHT);
+  ENCODER_Reset(LEFT_ENCODER);
+  ENCODER_Reset(RIGHT_ENCODER);
 
-  float rotations= distance_cm / CIRCUMFERENCE_WHEEL;
+  float rotations= distance_cm / CIRCUMFERENCE;
 
   /**
    * @brief Keeps track of how close we are to reaching the wanted
@@ -30,44 +32,19 @@ void ROBUSMovement_moveStraight(float direction, float speed_pct, float distance
 
   while (currentRotations <= wantedRotations)
   {
-    currentRotations = (float)ENCODER_Read(LEFT);
+    currentRotations = (float)ENCODER_Read(LEFT_ENCODER);
     distanceRatio = currentRotations / wantedRotations;
 
-   ROBUSMovement_adjustDirection(speed_pct, 50, distanceRatio, wantedRotations);
+    ROBUSMovement_adjustDirection(speed_pct, 50, distanceRatio, wantedRotations);
   }
 
   ROBUSMovement_stop();
-
- /* Serial.println("Gauche : ");
-  Serial.println(ENCODER_Read(LEFT_ENCODER));
-  Serial.println("Droite : ");
-  Serial.println(ENCODER_Read(RIGHT_ENCODER));
-
-  totalPulsesLeft += abs(ENCODER_Read(LEFT_ENCODER));
-  totalPulsesRight += abs(ENCODER_Read(RIGHT_ENCODER));
-
-  ENCODER_Reset(RIGHT_ENCODER);
-  if (abs(totalPulsesLeft - totalPulsesRight) >= 10)
-  {
-    int test = totalPulsesRight;
-    while (test >= totalPulsesLeft)
-    {
-      test -= abs(ENCODER_ReadReset(RIGHT_ENCODER));
-      MOTOR_SetSpeed(RIGHT_ENCODER, -0.1f);
-
-      Serial.println("Droite : ");
-      Serial.println(test);
-    }
-    ROBUSMovement_stop();
-  }*/
 }
 
 // direction : direction which to go (LEFT or RIGHT)
 // speed_pct : speed as a percentage
 // turnRadius_degrees : turn wideness in degrees per wheel turn
 // turn_degrees : turn in degrees
-
-
 void ROBUSMovement_turn(float direction, float speed_pct, int turnRadius_degreesPerWheelCycle, int turn_degrees) // à revoir
 {
 
@@ -105,8 +82,8 @@ void ROBUSMovement_turn(float direction, float speed_pct, int turnRadius_degrees
 
 
 
-// direction : direction which to go (LEFT or RIGHT)
-// speed_pct : speed as a percentage
+// direction : direction which to go (LEFT or RIGHT) (-1 or 1)
+// speed_pct : speed as a percentage, main speed divided by 2
 // turn_degrees : turn in degrees
 void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees)
 {
@@ -118,82 +95,3 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
   delay(2000);
   ROBUSMovement_stop();
 }
-
-void ROBUSMovement_stop()
-{
-  MOTOR_SetSpeed(LEFT_MOTOR, 0);
-  MOTOR_SetSpeed(RIGHT_MOTOR, 0);
-}
-
-// partie de christophe 
-
-void ROBUSMovement_adjustDirection(float speed_pct, int delay_ms, float distanceRatio, float totalDistance)
-{
-  int leftEncoderCount= ENCODER_Read(LEFT);
-  int rightEncoderCount= ENCODER_Read(RIGHT);
-
-  float speedRatio = speed_pct/100;
-  float speedFactor = ROBUS_GetSpeedFactorFromCurrentPosition(distanceRatio, totalDistance, speedRatio);
-
-  //Serial.println(speedRatio);
-
-  MOTOR_SetSpeed(RIGHT_MOTOR, speedFactor);
-  MOTOR_SetSpeed(LEFT_MOTOR, speedFactor);
-  /*
-  if (abs(leftEncoderCount) > abs(rightEncoderCount))
-  {
-    MOTOR_SetSpeed(LEFT_MOTOR, speedFactor*0.197);
-  }
-  else if (abs(leftEncoderCount) < abs(rightEncoderCount))
-  {
-    MOTOR_SetSpeed(LEFT_MOTOR, speedFactor*0.2015);
-  }
-  */
- 
-}
-
-float ROBUS_GetSpeedFactorFromCurrentPosition(float distanceLeft, float totalDistance, float maximumSpeed)
-{
-  
-  if(distanceLeft > 1)
-  {
-    Serial.println("Acceleration.cpp : l24 : ratio cannot be higher than 1.");
-    return 0;
-  }
-
-  if(distanceLeft < 0)
-  {
-    Serial.println("Acceleration.cpp : l30 : ratio cannot be lower than 0.");
-    return 0;
-  }
-
-
-  Serial.println(totalDistance);
-
-  // Adjusts the speeds according to the total distance we need to make
-  if (totalDistance > MAX_SPEED_AT_THIS_DISTANCE)
-  {
-    maximumSpeed = 1;
-  }
-  else
-  {
-    float distanceRatio = totalDistance/MAX_SPEED_AT_THIS_DISTANCE;
-    maximumSpeed = distanceRatio + START_SPEED_OFFSET;
-  }
-
-  /**
-   * @brief allows the sin operator to
-   * make a bell curve of the wanted speed
-   * depending on the distance left to make
-   * to reach the wanted destination.
-   */
-  float radians = distanceLeft * 3.14f;
-
-  //float fixedSin = pow(sin(radians), 3);
-
-  return (sin(radians) * maximumSpeed) + START_SPEED_OFFSET;
-
-
-}
-
-
