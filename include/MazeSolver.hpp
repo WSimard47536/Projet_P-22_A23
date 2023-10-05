@@ -18,12 +18,9 @@ typedef struct
 
 typedef struct
 {
-  MazePosition positions[3];
-} MazeRow;
-
-typedef struct
-{
-  MazeRow rows[10];
+  MazePosition positions[10][3];
 } Maze;
 
+void MazeSolver_init();
+void MazeSolver_setObstacle(int row, int column);
 void MazeSolver_algorithmicSolve();
