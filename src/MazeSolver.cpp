@@ -1,7 +1,8 @@
 #include "MazeSolver.hpp"
 
 Maze maze;
-Move moves[100]; //all moves
+Move moveHistory[100]; //all moves
+MovementState currentPositionOrientation;
 
 int currentMoveIndex;
 int currentPosition_row;
@@ -24,10 +25,34 @@ Move MazeSolver_getNextMove()
 {
     Move move;
 
-    if (MazeSolver_canGoFoward())
+    if (MazeSolver_canGoFoward() && moveHistory[currentMoveIndex].direction != BACKWARD)
     {
-        //move.direction;
+        move.direction = FORWARD;
+        move.speed_pct = 20; //À TESTER SI INUTILE ENLEVER
+        move.distance_cm = 50;
+        move.isTurn = false;
     }
+    return move;
+}
+
+void MazeSolver_onMoveCompletion(Move move)
+{
+    currentMoveIndex++;
+    moveHistory[currentMoveIndex] = move;
+    int newOrientation;
+    
+    if (move.isTurn)
+    {
+        //currentPositionOrientation.orientation = currentPositionOrientation
+    }
+    else
+    {
+        if (currentPositionOrientation.orientation % 2 == 0) //forward or backward
+        {
+            currentPositionOrientation.position_row += currentPositionOrientation.orientation;
+        }
+    }
+    
 }
 
 bool MazeSolver_canGoFoward()

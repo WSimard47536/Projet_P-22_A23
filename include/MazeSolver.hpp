@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ROBUSDefines.hpp"
+
 #define MAZE_NUMBER_OF_ROWS 10
 #define MAZE_NUMBER_OF_COLUMNS 3
 
@@ -16,6 +18,8 @@ typedef struct
   int direction;
   int speed_pct;
   int distance_cm;
+
+  bool isTurn;
 } Move;
 
 typedef struct 
@@ -30,6 +34,14 @@ typedef struct
 {
   MazePosition positions[MAZE_NUMBER_OF_ROWS][MAZE_NUMBER_OF_COLUMNS];
 } Maze;
+
+typedef struct
+{
+  int position_row;
+  int position_column;
+  int orientation;
+} MovementState; //Prob à changer nom plus ou moins clair
+
 
 void MazeSolver_init();
 void MazeSolver_setBaseMaze();
