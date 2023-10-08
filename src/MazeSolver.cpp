@@ -1,98 +1,188 @@
 #include "MazeSolver.hpp"
 
 Maze maze;
-Move moveHistory[100]; //all moves
-MovementState currentPositionOrientation;
+Move defaultMove = {-1, 0};
+
+Move moveHistory[MAZE_MOVE_HISTORY_SIZE];
+Move moveBuffer[MAZE_BUFFER_SIZE];
 
 int currentMoveIndex;
+
 int currentPosition_row;
 int currentPosition_column;
-
-#define OBSTACLE_LEFT 0
-#define OBSTACLE_FOWARD 1
-#define OBSTACLE_RIGHT 2
-#define OBSTACLE_BACKWARD 3
+int currentOrientation;
 
 void MazeSolver_init()
 {
     MazeSolver_setBaseMaze();
+    MazeSolver_resetMoveBuffer();
+    MazeSolver_resetMoveHistory();
+    currentMoveIndex = 0;
     currentPosition_row = 0;
     currentPosition_column = 1;
-    currentMoveIndex = 0;
+    currentOrientation = FACING_NORTH;
 }
 
-Move MazeSolver_getNextMove()
+void MazeSolver_resetMoveBuffer()
+{
+    for (int bufferIndex = 0; bufferIndex < MAZE_BUFFER_SIZE; bufferIndex++)
+    {
+        moveBuffer[bufferIndex] = defaultMove;
+    }
+}
+
+void MazeSolver_resetMoveHistory()
+{
+    for (int historyIndex = 0; historyIndex < MAZE_MOVE_HISTORY_SIZE; historyIndex++)
+    {
+        moveHistory[historyIndex] = defaultMove;
+    }
+}
+
+void MazeSolver_setNextMoves()
+{
+    if (!MazeSolver_checkSetMove(true))
+    {
+        MazeSolver_checkSetMove(false);
+    }
+}
+
+bool MazeSolver_checkSetMove(bool checkHasMovedOn)
+{
+    MazeSolver_resetMoveBuffer();
+    bool hasFoundMoves = true;
+    int bufferIndex = 0;
+
+    if (MazeSolver_canMoveTo(FACING_NORTH, checkHasMovedOn))
+    {
+        MazeSolver_addOrientationMoves(FACING_NORTH, &bufferIndex);
+        MazeSolver_addMoveStraight(&bufferIndex);
+    }
+    else if (MazeSolver_canMoveTo(FACING_WEST, checkHasMovedOn))
+    {
+        MazeSolver_addOrientationMoves(FACING_WEST, &bufferIndex);
+        MazeSolver_addMoveStraight(&bufferIndex);
+    }
+    else if (MazeSolver_canMoveTo(FACING_EAST, checkHasMovedOn))
+    {
+        MazeSolver_addOrientationMoves(FACING_EAST, &bufferIndex);
+        MazeSolver_addMoveStraight(&bufferIndex);
+    }
+    else if (MazeSolver_canMoveTo(FACING_SOUTH, checkHasMovedOn))
+    {
+        MazeSolver_addOrientationMoves(FACING_SOUTH, &bufferIndex);
+        MazeSolver_addMoveStraight(&bufferIndex);
+    }
+    else //dead end if checkHasMovedOn is true
+    {
+        hasFoundMoves = false;
+    }
+    return hasFoundMoves;
+}
+
+void MazeSolver_addOrientationMoves(int wantedOrientation, int* bufferIndex)
+{
+    int orientation = currentOrientation;
+    int orientationDifference = orientation - wantedOrientation;
+    int turnDirection = orientationDifference < 0 ? LEFT_TURN : RIGHT_TURN;
+    Move move = {turnDirection, true};
+    
+    if (orientationDifference != 0)
+    {
+        moveBuffer[*bufferIndex] = move;
+        *bufferIndex++;
+
+        if (orientationDifference % 2 == 0)
+        {
+            moveBuffer[*bufferIndex] = move;
+            *bufferIndex++;
+        }
+    }
+}
+
+void MazeSolver_addMoveStraight(int* bufferIndex)
 {
     Move move;
-
-    if (MazeSolver_canGoFoward() && moveHistory[currentMoveIndex].direction != BACKWARD)
-    {
-        move.direction = FORWARD;
-        move.speed_pct = 20; //À TESTER SI INUTILE ENLEVER
-        move.distance_cm = 50;
-        move.isTurn = false;
-    }
-    return move;
+    move.direction = FORWARD;
+    move.isTurn = false;
+    moveBuffer[*bufferIndex] = move;
+    *bufferIndex++;
 }
 
 void MazeSolver_onMoveCompletion(Move move)
 {
-    currentMoveIndex++;
     moveHistory[currentMoveIndex] = move;
-    int newOrientation;
+    currentMoveIndex++;
     
     if (move.isTurn)
     {
-        //currentPositionOrientation.orientation = currentPositionOrientation
+        currentOrientation = (currentOrientation + move.direction * - 1) % 4; // à tester
     }
     else
     {
-        if (currentPositionOrientation.orientation % 2 == 0) //forward or backward
+        if (currentOrientation % 2 == 0) //forward or backward
         {
-            currentPositionOrientation.position_row += currentPositionOrientation.orientation;
+            currentPosition_row += move.direction;
+        }
+        else
+        {
+            currentPosition_column += move.direction * - 1; //because of existing constants
         }
     }
-    
 }
 
-bool MazeSolver_canGoFoward()
+bool MazeSolver_canMoveTo(int direction, bool checkHasMovedOn)
 {
-    return maze.positions[currentPosition_row][currentPosition_column].canGoFoward;
-}
+    MazePosition position = maze.positions[currentPosition_row][currentPosition_column];
+    bool canMoveToDirection = position.values[direction];
 
-void MazeSolver_setObstacle(int row, int column, int direction)
-{
-    switch (direction)
+    if (!checkHasMovedOn)
     {
-    case OBSTACLE_LEFT:
-        if (column > 0)
-        {
-            maze.positions[row][column - 1].canGoRight = false;
-        }
-        maze.positions[row][column].canGoLeft = false;
-        break;
-    case OBSTACLE_FOWARD:
-        if (row < MAZE_NUMBER_OF_ROWS - 1)
-        {
-            maze.positions[row + 1][column].canGoBackward = false;
-        }
-        maze.positions[row][column].canGoFoward = false;
-        break;
-    case OBSTACLE_RIGHT:
-        if (column < MAZE_NUMBER_OF_COLUMNS - 1)
-        {
-            maze.positions[row][column + 1].canGoLeft = false;
-        }
-        maze.positions[row][column].canGoRight = false;
-        break;
-    case OBSTACLE_BACKWARD:
-        if (row < 0)
-        {
-            maze.positions[row - 1][column].canGoFoward = false;
-        }
-        maze.positions[row][column].canGoBackward = false;
-    default:
-        break;
+        return canMoveToDirection;
+    }
+    else if (!position.members.hasMovedOn)
+    {
+        return canMoveToDirection;
+    }
+    else 
+    {
+        return false;
+    }
+}
+
+void MazeSolver_setObstacle(int row, int column)
+{
+    switch (currentOrientation)
+    {
+        case FACING_WEST:
+            if (column > 0)
+            {
+                maze.positions[row][column - 1].members.canGoRight = false;
+            }
+            maze.positions[row][column].members.canGoLeft = false;
+            break;
+        case FACING_NORTH:
+            if (row < MAZE_NUMBER_OF_ROWS - 1)
+            {
+                maze.positions[row + 1][column].members.canGoBackwards = false;
+            }
+            maze.positions[row][column].members.canGoFoward = false;
+            break;
+        case FACING_EAST:
+            if (column < MAZE_NUMBER_OF_COLUMNS - 1)
+            {
+                maze.positions[row][column + 1].members.canGoLeft = false;
+            }
+            maze.positions[row][column].members.canGoRight = false;
+            break;
+        case FACING_SOUTH:
+            if (row < 0)
+            {
+                maze.positions[row - 1][column].members.canGoFoward = false;
+            }
+            maze.positions[row][column].members.canGoBackwards = false;
+        default:
+            break;
     }
 }
 
@@ -100,163 +190,163 @@ void MazeSolver_setObstacle(int row, int column, int direction)
 void MazeSolver_setBaseMaze()
 {
     #pragma region Row_1
-    maze.positions[0][0].canGoLeft = false;
-    maze.positions[0][0].canGoFoward = true;
-    maze.positions[0][0].canGoRight = true;
-    maze.positions[0][0].canGoBackward = false;
+    maze.positions[0][0].members.canGoLeft = false;
+    maze.positions[0][0].members.canGoFoward = true;
+    maze.positions[0][0].members.canGoRight = true;
+    maze.positions[0][0].members.canGoBackwards = false;
 
-    maze.positions[0][1].canGoLeft = true;
-    maze.positions[0][1].canGoFoward = true;
-    maze.positions[0][1].canGoRight = true;
-    maze.positions[0][1].canGoBackward = false;
+    maze.positions[0][1].members.canGoLeft = true;
+    maze.positions[0][1].members.canGoFoward = true;
+    maze.positions[0][1].members.canGoRight = true;
+    maze.positions[0][1].members.canGoBackwards = false;
 
-    maze.positions[0][2].canGoLeft = true;
-    maze.positions[0][2].canGoFoward = true;
-    maze.positions[0][2].canGoRight = false;
-    maze.positions[0][2].canGoBackward = false;
+    maze.positions[0][2].members.canGoLeft = true;
+    maze.positions[0][2].members.canGoFoward = true;
+    maze.positions[0][2].members.canGoRight = false;
+    maze.positions[0][2].members.canGoBackwards = false;
     #pragma endregion
     #pragma region Row_2
-    maze.positions[1][0].canGoLeft = false;
-    maze.positions[1][0].canGoFoward = true;
-    maze.positions[1][0].canGoRight = false;
-    maze.positions[1][0].canGoBackward = true;
+    maze.positions[1][0].members.canGoLeft = false;
+    maze.positions[1][0].members.canGoFoward = true;
+    maze.positions[1][0].members.canGoRight = false;
+    maze.positions[1][0].members.canGoBackwards = true;
 
-    maze.positions[1][1].canGoLeft = false;
-    maze.positions[1][1].canGoFoward = true;
-    maze.positions[1][1].canGoRight = false;
-    maze.positions[1][1].canGoBackward = true;
+    maze.positions[1][1].members.canGoLeft = false;
+    maze.positions[1][1].members.canGoFoward = true;
+    maze.positions[1][1].members.canGoRight = false;
+    maze.positions[1][1].members.canGoBackwards = true;
 
-    maze.positions[1][2].canGoLeft = false;
-    maze.positions[1][2].canGoFoward = true;
-    maze.positions[1][2].canGoRight = false;
-    maze.positions[1][2].canGoBackward = true;
+    maze.positions[1][2].members.canGoLeft = false;
+    maze.positions[1][2].members.canGoFoward = true;
+    maze.positions[1][2].members.canGoRight = false;
+    maze.positions[1][2].members.canGoBackwards = true;
     #pragma endregion
     #pragma region Row_3
-    maze.positions[2][0].canGoLeft = false;
-    maze.positions[2][0].canGoFoward = true;
-    maze.positions[2][0].canGoRight = true;
-    maze.positions[2][0].canGoBackward = true;
+    maze.positions[2][0].members.canGoLeft = false;
+    maze.positions[2][0].members.canGoFoward = true;
+    maze.positions[2][0].members.canGoRight = true;
+    maze.positions[2][0].members.canGoBackwards = true;
 
-    maze.positions[2][1].canGoLeft = true;
-    maze.positions[2][1].canGoFoward = true;
-    maze.positions[2][1].canGoRight = true;
-    maze.positions[2][1].canGoBackward = true;
+    maze.positions[2][1].members.canGoLeft = true;
+    maze.positions[2][1].members.canGoFoward = true;
+    maze.positions[2][1].members.canGoRight = true;
+    maze.positions[2][1].members.canGoBackwards = true;
 
-    maze.positions[2][2].canGoLeft = true;
-    maze.positions[2][2].canGoFoward = true;
-    maze.positions[2][2].canGoRight = false;
-    maze.positions[2][2].canGoBackward = true;
+    maze.positions[2][2].members.canGoLeft = true;
+    maze.positions[2][2].members.canGoFoward = true;
+    maze.positions[2][2].members.canGoRight = false;
+    maze.positions[2][2].members.canGoBackwards = true;
     #pragma endregion
     #pragma region Row_4
-    maze.positions[3][0].canGoLeft = false;
-    maze.positions[3][0].canGoFoward = true;
-    maze.positions[3][0].canGoRight = false;
-    maze.positions[3][0].canGoBackward = true;
+    maze.positions[3][0].members.canGoLeft = false;
+    maze.positions[3][0].members.canGoFoward = true;
+    maze.positions[3][0].members.canGoRight = false;
+    maze.positions[3][0].members.canGoBackwards = true;
 
-    maze.positions[3][1].canGoLeft = false;
-    maze.positions[3][1].canGoFoward = true;
-    maze.positions[3][1].canGoRight = false;
-    maze.positions[3][1].canGoBackward = true;
+    maze.positions[3][1].members.canGoLeft = false;
+    maze.positions[3][1].members.canGoFoward = true;
+    maze.positions[3][1].members.canGoRight = false;
+    maze.positions[3][1].members.canGoBackwards = true;
 
-    maze.positions[3][2].canGoLeft = false;
-    maze.positions[3][2].canGoFoward = true;
-    maze.positions[3][2].canGoRight = false;
-    maze.positions[3][2].canGoBackward = true;
+    maze.positions[3][2].members.canGoLeft = false;
+    maze.positions[3][2].members.canGoFoward = true;
+    maze.positions[3][2].members.canGoRight = false;
+    maze.positions[3][2].members.canGoBackwards = true;
     #pragma endregion
     #pragma region Row_5
-    maze.positions[4][0].canGoLeft = false;
-    maze.positions[4][0].canGoFoward = true;
-    maze.positions[4][0].canGoRight = true;
-    maze.positions[4][0].canGoBackward = true;
+    maze.positions[4][0].members.canGoLeft = false;
+    maze.positions[4][0].members.canGoFoward = true;
+    maze.positions[4][0].members.canGoRight = true;
+    maze.positions[4][0].members.canGoBackwards = true;
 
-    maze.positions[4][1].canGoLeft = true;
-    maze.positions[4][1].canGoFoward = true;
-    maze.positions[4][1].canGoRight = true;
-    maze.positions[4][1].canGoBackward = true;
+    maze.positions[4][1].members.canGoLeft = true;
+    maze.positions[4][1].members.canGoFoward = true;
+    maze.positions[4][1].members.canGoRight = true;
+    maze.positions[4][1].members.canGoBackwards = true;
 
-    maze.positions[4][2].canGoLeft = true;
-    maze.positions[4][2].canGoFoward = true;
-    maze.positions[4][2].canGoRight = false;
-    maze.positions[4][2].canGoBackward = true;
+    maze.positions[4][2].members.canGoLeft = true;
+    maze.positions[4][2].members.canGoFoward = true;
+    maze.positions[4][2].members.canGoRight = false;
+    maze.positions[4][2].members.canGoBackwards = true;
     #pragma endregion
     #pragma region Row_6
-    maze.positions[5][0].canGoLeft = false;
-    maze.positions[5][0].canGoFoward = true;
-    maze.positions[5][0].canGoRight = false;
-    maze.positions[5][0].canGoBackward = true;
+    maze.positions[5][0].members.canGoLeft = false;
+    maze.positions[5][0].members.canGoFoward = true;
+    maze.positions[5][0].members.canGoRight = false;
+    maze.positions[5][0].members.canGoBackwards = true;
 
-    maze.positions[5][1].canGoLeft = false;
-    maze.positions[5][1].canGoFoward = true;
-    maze.positions[5][1].canGoRight = false;
-    maze.positions[5][1].canGoBackward = true;
+    maze.positions[5][1].members.canGoLeft = false;
+    maze.positions[5][1].members.canGoFoward = true;
+    maze.positions[5][1].members.canGoRight = false;
+    maze.positions[5][1].members.canGoBackwards = true;
 
-    maze.positions[5][2].canGoLeft = false;
-    maze.positions[5][2].canGoFoward = true;
-    maze.positions[5][2].canGoRight = false;
-    maze.positions[5][2].canGoBackward = true;
+    maze.positions[5][2].members.canGoLeft = false;
+    maze.positions[5][2].members.canGoFoward = true;
+    maze.positions[5][2].members.canGoRight = false;
+    maze.positions[5][2].members.canGoBackwards = true;
     #pragma endregion
     #pragma region Row_7
-    maze.positions[6][0].canGoLeft = false;
-    maze.positions[6][0].canGoFoward = true;
-    maze.positions[6][0].canGoRight = true;
-    maze.positions[6][0].canGoBackward = true;
+    maze.positions[6][0].members.canGoLeft = false;
+    maze.positions[6][0].members.canGoFoward = true;
+    maze.positions[6][0].members.canGoRight = true;
+    maze.positions[6][0].members.canGoBackwards = true;
 
-    maze.positions[6][1].canGoLeft = true;
-    maze.positions[6][1].canGoFoward = true;
-    maze.positions[6][1].canGoRight = true;
-    maze.positions[6][1].canGoBackward = true;
+    maze.positions[6][1].members.canGoLeft = true;
+    maze.positions[6][1].members.canGoFoward = true;
+    maze.positions[6][1].members.canGoRight = true;
+    maze.positions[6][1].members.canGoBackwards = true;
 
-    maze.positions[6][2].canGoLeft = true;
-    maze.positions[6][2].canGoFoward = true;
-    maze.positions[6][2].canGoRight = false;
-    maze.positions[6][2].canGoBackward = true;
+    maze.positions[6][2].members.canGoLeft = true;
+    maze.positions[6][2].members.canGoFoward = true;
+    maze.positions[6][2].members.canGoRight = false;
+    maze.positions[6][2].members.canGoBackwards = true;
     #pragma endregion
     #pragma region Row_8
-    maze.positions[7][0].canGoLeft = false;
-    maze.positions[7][0].canGoFoward = true;
-    maze.positions[7][0].canGoRight = false;
-    maze.positions[7][0].canGoBackward = true;
+    maze.positions[7][0].members.canGoLeft = false;
+    maze.positions[7][0].members.canGoFoward = true;
+    maze.positions[7][0].members.canGoRight = false;
+    maze.positions[7][0].members.canGoBackwards = true;
 
-    maze.positions[7][1].canGoLeft = false;
-    maze.positions[7][1].canGoFoward = true;
-    maze.positions[7][1].canGoRight = false;
-    maze.positions[7][1].canGoBackward = true;
+    maze.positions[7][1].members.canGoLeft = false;
+    maze.positions[7][1].members.canGoFoward = true;
+    maze.positions[7][1].members.canGoRight = false;
+    maze.positions[7][1].members.canGoBackwards = true;
 
-    maze.positions[7][2].canGoLeft = false;
-    maze.positions[7][2].canGoFoward = true;
-    maze.positions[7][2].canGoRight = false;
-    maze.positions[7][2].canGoBackward = true;
+    maze.positions[7][2].members.canGoLeft = false;
+    maze.positions[7][2].members.canGoFoward = true;
+    maze.positions[7][2].members.canGoRight = false;
+    maze.positions[7][2].members.canGoBackwards = true;
     #pragma endregion
     #pragma region Row_9
-    maze.positions[8][0].canGoLeft = false;
-    maze.positions[8][0].canGoFoward = true;
-    maze.positions[8][0].canGoRight = true;
-    maze.positions[8][0].canGoBackward = true;
+    maze.positions[8][0].members.canGoLeft = false;
+    maze.positions[8][0].members.canGoFoward = true;
+    maze.positions[8][0].members.canGoRight = true;
+    maze.positions[8][0].members.canGoBackwards = true;
 
-    maze.positions[8][1].canGoLeft = true;
-    maze.positions[8][1].canGoFoward = true;
-    maze.positions[8][1].canGoRight = true;
-    maze.positions[8][1].canGoBackward = true;
+    maze.positions[8][1].members.canGoLeft = true;
+    maze.positions[8][1].members.canGoFoward = true;
+    maze.positions[8][1].members.canGoRight = true;
+    maze.positions[8][1].members.canGoBackwards = true;
 
-    maze.positions[8][2].canGoLeft = true;
-    maze.positions[8][2].canGoFoward = true;
-    maze.positions[8][2].canGoRight = false;
-    maze.positions[8][2].canGoBackward = true;
+    maze.positions[8][2].members.canGoLeft = true;
+    maze.positions[8][2].members.canGoFoward = true;
+    maze.positions[8][2].members.canGoRight = false;
+    maze.positions[8][2].members.canGoBackwards = true;
     #pragma endregion
     #pragma region Row_10
-    maze.positions[9][0].canGoLeft = false;
-    maze.positions[9][0].canGoFoward = false;
-    maze.positions[9][0].canGoRight = false;
-    maze.positions[9][0].canGoBackward = true;
+    maze.positions[9][0].members.canGoLeft = false;
+    maze.positions[9][0].members.canGoFoward = false;
+    maze.positions[9][0].members.canGoRight = false;
+    maze.positions[9][0].members.canGoBackwards = true;
 
-    maze.positions[9][1].canGoLeft = false;
-    maze.positions[9][1].canGoFoward = false;
-    maze.positions[9][1].canGoRight = false;
-    maze.positions[9][1].canGoBackward = true;
+    maze.positions[9][1].members.canGoLeft = false;
+    maze.positions[9][1].members.canGoFoward = false;
+    maze.positions[9][1].members.canGoRight = false;
+    maze.positions[9][1].members.canGoBackwards = true;
 
-    maze.positions[9][2].canGoLeft = false;
-    maze.positions[9][2].canGoFoward = false;
-    maze.positions[9][2].canGoRight = false;
-    maze.positions[9][2].canGoBackward = true;
+    maze.positions[9][2].members.canGoLeft = false;
+    maze.positions[9][2].members.canGoFoward = false;
+    maze.positions[9][2].members.canGoRight = false;
+    maze.positions[9][2].members.canGoBackwards = true;
     #pragma endregion
 }

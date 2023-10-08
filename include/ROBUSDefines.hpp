@@ -26,11 +26,11 @@
 #define RIGHT_ENCODER 1
 #pragma endregion
 
-#pragma region -ORIENTATIONS
-#define ORIENTATION_LEFT 0
-#define ORIENTATION_FORWARD 1
-#define ORIENTATION_RIGHT 2
-#define ORIENTATION_BACKWARD 3
+#pragma region -ORIENTATIONS-
+#define FACING_WEST 0
+#define FACING_NORTH 1
+#define FACING_EAST 2
+#define FACING_SOUTH 3
 #pragma endregion
 
 #pragma region -DIMMENSIONS
