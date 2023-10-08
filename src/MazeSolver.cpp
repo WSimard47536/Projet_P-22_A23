@@ -1,4 +1,5 @@
 #include "MazeSolver.hpp"
+#include "ROBUSMovement.hpp"
 
 Maze maze;
 Move defaultMove = {-1, 0};
@@ -21,6 +22,7 @@ void MazeSolver_init()
     currentPosition_row = 0;
     currentPosition_column = 1;
     currentOrientation = FACING_NORTH;
+    maze.positions[currentPosition_row][currentPosition_column].members.hasMovedOn = true;
 }
 
 void MazeSolver_resetMoveBuffer()
@@ -80,6 +82,24 @@ bool MazeSolver_checkSetMove(bool checkHasMovedOn)
     return hasFoundMoves;
 }
 
+void MazeSolver_executeNextMoves()
+{
+    Move move;
+    for (int bufferIndex = 0; bufferIndex < MAZE_BUFFER_SIZE; bufferIndex++)
+    {
+        if (moveBuffer[bufferIndex].direction != - 1)
+        {
+            move = moveBuffer[bufferIndex];
+            Serial.print("Direction : ");
+            Serial.println(move.direction);
+            Serial.print("IsTurn : ");
+            Serial.println(move.isTurn);
+
+            MazeSolver_onMoveCompletion(move);
+        }
+    }
+}
+
 void MazeSolver_addOrientationMoves(int wantedOrientation, int* bufferIndex)
 {
     int orientation = currentOrientation;
@@ -113,14 +133,14 @@ void MazeSolver_onMoveCompletion(Move move)
 {
     moveHistory[currentMoveIndex] = move;
     currentMoveIndex++;
-    
+
     if (move.isTurn)
     {
         currentOrientation = (currentOrientation + move.direction * - 1) % 4; // à tester
     }
     else
     {
-        if (currentOrientation % 2 == 0) //forward or backward
+        if (currentOrientation % 2 == 1) //forward or backward
         {
             currentPosition_row += move.direction;
         }
@@ -129,6 +149,17 @@ void MazeSolver_onMoveCompletion(Move move)
             currentPosition_column += move.direction * - 1; //because of existing constants
         }
     }
+    maze.positions[currentPosition_row][currentPosition_column].members.hasMovedOn = true;
+
+    Serial.print("Current position_row : ");
+    Serial.println(currentPosition_row);
+    Serial.print("Current position_column : ");
+    Serial.println(currentPosition_column);
+}
+
+bool MazeSolver_hasCompletedMaze()
+{
+    return currentPosition_row == MAZE_NUMBER_OF_ROWS - 1;
 }
 
 bool MazeSolver_canMoveTo(int direction, bool checkHasMovedOn)
@@ -349,4 +380,12 @@ void MazeSolver_setBaseMaze()
     maze.positions[9][2].members.canGoRight = false;
     maze.positions[9][2].members.canGoBackwards = true;
     #pragma endregion
+
+    for (int row = 0; row < MAZE_NUMBER_OF_ROWS; row++)
+    {
+        for (int column = 0; column < MAZE_NUMBER_OF_COLUMNS; column++)
+        {
+            maze.positions[row][column].members.hasMovedOn = false;
+        }
+    }
 }

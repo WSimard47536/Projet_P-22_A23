@@ -50,7 +50,6 @@ typedef struct
 } Maze;
 
 void MazeSolver_init();
-void MazeSolver_setBaseMaze();
 void MazeSolver_resetMoveHistory();
 void MazeSolver_resetMoveBuffer();
 
@@ -58,11 +57,13 @@ void MazeSolver_setObstacle(int row, int column);
 
 void MazeSolver_setNextMoves();
 bool MazeSolver_checkSetMove(bool checkHasMovedOn);
+void MazeSolver_executeNextMoves();
 
 void MazeSolver_addOrientationMoves(int wantedOrientation, int* bufferIndex);
 void MazeSolver_addMoveStraight(int* bufferIndex);
 bool MazeSolver_canMoveTo(int direction, bool checkHasMovedOn);
 
 void MazeSolver_onMoveCompletion(Move move);
+bool MazeSolver_hasCompletedMaze();
 
-Move MazeSolver_getLastMove(bool isTurn);
+void MazeSolver_setBaseMaze();
