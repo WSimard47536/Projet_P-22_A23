@@ -34,8 +34,8 @@ typedef union
   struct
   {
     bool canGoLeft;
-    bool canGoRight;
     bool canGoFoward;
+    bool canGoRight;
     bool canGoBackwards;
 
     bool hasMovedOn;
@@ -59,11 +59,13 @@ void MazeSolver_setNextMoves();
 bool MazeSolver_checkSetMove(bool checkHasMovedOn);
 void MazeSolver_executeNextMoves();
 
-void MazeSolver_addOrientationMoves(int wantedOrientation, int* bufferIndex);
-void MazeSolver_addMoveStraight(int* bufferIndex);
+void MazeSolver_addOrientationMoves(int wantedOrientation);
+void MazeSolver_addMoveStraight();
 bool MazeSolver_canMoveTo(int direction, bool checkHasMovedOn);
+bool MazeSolver_hasMovedOn(int direction);
 
 void MazeSolver_onMoveCompletion(Move move);
 bool MazeSolver_hasCompletedMaze();
 
 void MazeSolver_setBaseMaze();
+void MazeSolver_setTestMaze();

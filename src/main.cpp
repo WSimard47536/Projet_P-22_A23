@@ -23,6 +23,11 @@ void loop()
     MazeSolver_setNextMoves();
     MazeSolver_executeNextMoves();
   }
+  
+  for (;;)
+  {
+    
+  }
   //if (ROBUS_IsBumper(REAR_BUMPER))
   //{
   //  #ifdef ISTEST
