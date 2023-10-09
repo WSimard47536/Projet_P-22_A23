@@ -92,6 +92,14 @@ void MazeSolver_executeNextMoves()
         if (moveBuffer[index].direction != - 2)
         {
             move = moveBuffer[index];
+            if (!move.isTurn)
+            {
+                ROBUSMovement_moveStraight(move.direction, 20, 50);
+            }
+            else
+            {
+                ROBUSMovement_turnOnSelf(move.direction, 20, 90);
+            }
             Serial.print("Direction : ");
             Serial.println(move.direction);
             Serial.print("IsTurn : ");
