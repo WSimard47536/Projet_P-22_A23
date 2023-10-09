@@ -160,11 +160,11 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
   //à modifier selon tests
   /*float Kc = 0.0007;
   float Ti = 500;
-  float Kd_gauche = 0.92323; //90° tout petit peu pas assez
-  float Kd_droite = 0.94; //90° tout petit peu pas assez
-  float distance_between_wheels = 18.5;*/
+  float Kd_gauche = 0.92323; 
+  float Kd_droite = 0.954; 
+  float distance_between_wheels = 18.5; */
   //////////////////////
-  float Kd = 1; //90° tout petit peu pas assez
+  float Kd = 1; 
   if (direction == 1){
     Kd = Kd_droite;
   }
