@@ -59,13 +59,11 @@ bool MazeSolver_checkSetMove(bool checkHasMovedOn)
 
     if (MazeSolver_canMoveTo(FACING_NORTH, checkHasMovedOn))
     {
-        Serial.println("test north");
         MazeSolver_addOrientationMoves(FACING_NORTH);
         MazeSolver_addMoveStraight();
     }
     else if (MazeSolver_canMoveTo(FACING_WEST, checkHasMovedOn))
     {
-        Serial.println("test west");
         MazeSolver_addOrientationMoves(FACING_WEST);
         MazeSolver_addMoveStraight();
     }
@@ -167,8 +165,6 @@ void MazeSolver_onMoveCompletion(Move move)
         }
     }
     maze.positions[currentPosition_row][currentPosition_column].members.hasMovedOn = true;
-    Serial.print("Current orientation : ");
-    Serial.println(currentOrientation);
 }
 
 bool MazeSolver_hasCompletedMaze()
@@ -195,7 +191,7 @@ bool MazeSolver_canMoveTo(int direction, bool checkHasMovedOn)
     }
 }
 
-bool MazeSolver_hasMovedOn(int direction)
+bool MazeSolver_hasMovedOn(int direction) // à coder
 {
     bool hasMovedOn = false;
     return hasMovedOn;
