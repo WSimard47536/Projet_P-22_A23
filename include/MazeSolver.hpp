@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ROBUSDefines.hpp"
+#include "ObstacleDetector.hpp"
 
 #define MAZE_NUMBER_OF_ROWS 10
 #define MAZE_NUMBER_OF_COLUMNS 3
