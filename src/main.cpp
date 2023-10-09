@@ -47,4 +47,17 @@ void loop()
 
 
 
+  //if (ROBUS_IsBumper(REAR_BUMPER))
+  //{
+  //  #ifdef ISTEST
+  //    test_ROBUSMovement_moveStraight();
+  //  #endif
+  //}
+  Serial.println("Va entrer dans le loop");
+  waitForWhistle();
+  Serial.println("A entendu le son et est sorti du while");
+  //ROBUSMovement_turnOnSelf(-1, 0.10, 90);
+  //ROBUSMovement_turnOnSelf(1, 0.10, 1080);
+  delay(5000);
+  
 }
