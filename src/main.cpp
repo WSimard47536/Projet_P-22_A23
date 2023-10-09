@@ -20,6 +20,7 @@ void loop()
 {
   Serial.println("Beggining...");
   delay(2000);
+
   while (!MazeSolver_hasCompletedMaze())
   {
     if (GetWall())
