@@ -12,7 +12,7 @@
 
 #include "Proximity_sensors/DC2318.hpp"
 
-#define LEFT_PIN 53
+#define LEFT_PIN 48
 #define RIGHT_PIN 49
 #define DC2318_FRONT_PINS LEFT_PIN, RIGHT_PIN
 
