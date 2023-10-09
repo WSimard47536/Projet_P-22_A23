@@ -22,16 +22,11 @@ void loop()
   //    test_ROBUSMovement_moveStraight();
   //  #endif
   //}
-
-  ROBUSMovement_moveStraight(FORWARD, vitesse, 50);
-  delay(500);
-  ROBUSMovement_turnOnSelf(1, 0.15, 90); 
-  ROBUSMovement_moveStraight(FORWARD, vitesse, 50);
-  delay(500);
-  ROBUSMovement_turnOnSelf(-1, (0.15), 90);
+  Serial.println("Va entrer dans le loop");
+  waitForWhistle();
+  Serial.println("A entendu le son et est sorti du while");
+  //ROBUSMovement_turnOnSelf(-1, 0.10, 90);
   //ROBUSMovement_turnOnSelf(1, 0.10, 1080);
-  delay(2000);
-
-
-
+  delay(5000);
+  
 }
