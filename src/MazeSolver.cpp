@@ -16,8 +16,8 @@ int currentOrientation;
 
 void MazeSolver_init()
 {
-    //MazeSolver_setBaseMaze();
-    MazeSolver_setTestMaze();
+    MazeSolver_setBaseMaze();
+    //MazeSolver_setTestMaze();
     MazeSolver_resetMoveBuffer();
     MazeSolver_resetMoveHistory();
     currentMoveIndex = 0;
@@ -94,7 +94,7 @@ void MazeSolver_executeNextMoves()
             move = moveBuffer[index];
             if (!move.isTurn)
             {
-                //ROBUSMovement_moveStraight(move.direction, 20, 50);
+                ROBUSMovement_moveStraight(move.direction, 20, 50);
             }
             else
             {
@@ -205,8 +205,10 @@ bool MazeSolver_hasMovedOn(int direction) // à coder
     return hasMovedOn;
 }
 
-void MazeSolver_setObstacle(int row, int column)
+void MazeSolver_setObstacle()
 {
+    int row = currentPosition_row;
+    int column = currentPosition_column;
     switch (currentOrientation)
     {
         case FACING_WEST:

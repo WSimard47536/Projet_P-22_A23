@@ -53,7 +53,7 @@ void MazeSolver_init();
 void MazeSolver_resetMoveHistory();
 void MazeSolver_resetMoveBuffer();
 
-void MazeSolver_setObstacle(int row, int column);
+void MazeSolver_setObstacle();
 
 void MazeSolver_setNextMoves();
 bool MazeSolver_checkSetMove(bool checkHasMovedOn);

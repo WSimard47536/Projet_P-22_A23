@@ -12,16 +12,20 @@ int vitesse = 30; //0 à 100, % de vitesse
 void setup()
 {
   BoardInit();
-  //InitializeProximitySensors();
+  InitializeProximitySensors();
+  MazeSolver_init();
 }
 
 void loop()
 {
   Serial.println("Beggining...");
-  delay(5000);
-  MazeSolver_init();
+  delay(2000);
   while (!MazeSolver_hasCompletedMaze())
   {
+    if (GetWall())
+    {
+      MazeSolver_setObstacle();
+    }
     MazeSolver_setNextMoves();
     MazeSolver_executeNextMoves();
   }
@@ -30,21 +34,15 @@ void loop()
   {
     
   }
-  //if (ROBUS_IsBumper(REAR_BUMPER))
-  //{
-  //  #ifdef ISTEST
-  //    test_ROBUSMovement_moveStraight();
-  //  #endif
-  //}
 
-  ROBUSMovement_moveStraight(FORWARD, vitesse, 50);
+  /*ROBUSMovement_moveStraight(FORWARD, vitesse, 50);
   delay(500);
   ROBUSMovement_turnOnSelf(1, 0.15, 90); 
   ROBUSMovement_moveStraight(FORWARD, vitesse, 50);
   delay(500);
   ROBUSMovement_turnOnSelf(-1, (0.15), 90);
   //ROBUSMovement_turnOnSelf(1, 0.10, 1080);
-  delay(2000);
+  delay(2000);*/
 
 
 
