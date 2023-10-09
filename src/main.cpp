@@ -23,12 +23,12 @@ void loop()
   //  #endif
   //}
 
-  //ROBUSMovement_moveStraight(FORWARD, vitesse, 50);
-  //delay(500);
+  ROBUSMovement_moveStraight(FORWARD, vitesse, 50);
+  delay(500);
   ROBUSMovement_turnOnSelf(1, 0.15, 90); 
-  //ROBUSMovement_moveStraight(FORWARD, vitesse, 50);
-  //delay(500);
-  //ROBUSMovement_turnOnSelf(-1, (0.12), 90);
+  ROBUSMovement_moveStraight(FORWARD, vitesse, 50);
+  delay(500);
+  ROBUSMovement_turnOnSelf(-1, (0.15), 90);
   //ROBUSMovement_turnOnSelf(1, 0.10, 1080);
   delay(2000);
 
