@@ -17,9 +17,11 @@ int readWhistleNoise(){
     return i;
 }
 
+
 bool compareBothNoises(){
     int a = readAmbientNoise();
     int w = readWhistleNoise();
+    //int a = 650;
     if (a > w){
         Serial.println(0);
         return 0;
