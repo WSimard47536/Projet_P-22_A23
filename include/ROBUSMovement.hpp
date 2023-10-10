@@ -36,7 +36,8 @@ void ROBUSMovement_adjustDirection(float speed_pct, int delay_ms, float distance
 void ROBUSMovement_moveStraight(float direction, float speed_pct, float distance_cm);
 void ROBUSMovement_turn(float direction, float speed_pct, int turnRadius_degreesPerWheelCycle, int turnDistance_degrees);
 
-//float PID_test(float Ubias, float proportional_const, float integral_const, float derivative_const, float set_point, float process_variable, float time, float* previousDerivativeError, float* errorSum);
+float PID_test(float Ubias, float proportional_const, float integral_const, float derivative_const, float set_point, float process_variable, float time, float* previousDerivativeError, float* errorSum);
+float ROBUSMovement_turnOnSelf_math_test(float distance_between_wheels, float wheel_diameter, int degrees);
 //float PID_calibration_test(float Ubias, float* Ku, float set_point, float process_variable);
 
 //void ROBUSMovement_test(float direction, float speed_pct, int distance, int degrees);
@@ -48,7 +49,7 @@ void ROBUSMovement_straight(float direction, float speed_pct, int distance);
 void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turnDistance_degrees);
 float PID(float Kc, float Ti, float set_point, float process_variable, int nbr_cycle, float start_time, float current_time, float Ubias, float* erreur_integrale);
 
-
+void ROBUSMovement_turnOnSelf_test(float direction, float speed_pct, int turnDistance_degrees);
 
 
 void ROBUSMovement_stop();
