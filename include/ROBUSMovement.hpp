@@ -5,6 +5,10 @@
 
 #define FORWARD 1.0f
 #define BACKWARD -1.0f
+
+//#define LEFT_TURN -1.0f
+//#define RIGHT_TURN 1.0f
+
 #define LEFT_TURN 1.0f
 #define RIGHT_TURN -1.0f
 

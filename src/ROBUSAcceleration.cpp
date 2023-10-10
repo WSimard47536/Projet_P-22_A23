@@ -29,20 +29,20 @@ float ROBUS_GetSpeedFactorFromCurrentPosition(float distanceLeft, float totalDis
   #pragma region -ERROR_CASES-
   if(distanceLeft > 1)
   {
-    Serial.println("Acceleration.cpp : l24 : ratio cannot be higher than 1.");
+    //Serial.println("Acceleration.cpp : l24 : ratio cannot be higher than 1.");
     return 0;
   }
 
   if(distanceLeft < 0)
   {
-    Serial.println("Acceleration.cpp : l30 : ratio cannot be lower than 0.");
+    //Serial.println("Acceleration.cpp : l30 : ratio cannot be lower than 0.");
     return 0;
   }
   #pragma endregion
 
   #pragma region -SPEED COMPENSATION-
 
-  Serial.println(totalDistance);
+  //Serial.println(totalDistance);
 
   // Adjusts the speeds according to the total distance we need to make
   if (totalDistance > MAX_SPEED_AT_THIS_DISTANCE)

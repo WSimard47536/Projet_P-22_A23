@@ -26,6 +26,13 @@
 #define RIGHT_ENCODER 1
 #pragma endregion
 
+#pragma region -ORIENTATIONS-
+#define FACING_WEST 0
+#define FACING_NORTH 1
+#define FACING_EAST 2
+#define FACING_SOUTH 3
+#pragma endregion
+
 #pragma region -DIMMENSIONS
 /** @brief The diameter of the motor wheels in centimeters */
 #define DIAMETER 7.60f
