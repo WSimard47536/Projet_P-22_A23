@@ -16,8 +16,8 @@ int currentOrientation;
 
 void MazeSolver_init()
 {
-    MazeSolver_setBaseMaze();
-    //MazeSolver_setTestMaze();
+    //MazeSolver_setBaseMaze();
+    MazeSolver_setTestMaze();
     MazeSolver_resetMoveBuffer();
     MazeSolver_resetMoveHistory();
     currentMoveIndex = 0;
@@ -57,7 +57,7 @@ bool MazeSolver_checkSetMove(bool checkHasMovedOn)
     bufferIndex = 0;
     bool hasFoundMoves = true;
 
-    if (MazeSolver_canMoveTo(FACING_NORTH, checkHasMovedOn))
+    if (MazeSolver_canMoveTo(FACING_NORTH, checkHasMovedOn) == 1)
     {
         MazeSolver_addOrientationMoves(FACING_NORTH);
         MazeSolver_addMoveStraight();
@@ -66,17 +66,17 @@ bool MazeSolver_checkSetMove(bool checkHasMovedOn)
             MazeSolver_addMoveStraight();
         }*/
     }
-    else if (MazeSolver_canMoveTo(FACING_WEST, checkHasMovedOn))
+    else if (MazeSolver_canMoveTo(FACING_WEST, checkHasMovedOn) == 1)
     {
         MazeSolver_addOrientationMoves(FACING_WEST);
         MazeSolver_addMoveStraight();
     }
-    else if (MazeSolver_canMoveTo(FACING_EAST, checkHasMovedOn))
+    else if (MazeSolver_canMoveTo(FACING_EAST, checkHasMovedOn) == 1)
     {
         MazeSolver_addOrientationMoves(FACING_EAST);
         MazeSolver_addMoveStraight();
     }
-    else if (MazeSolver_canMoveTo(FACING_SOUTH, checkHasMovedOn))
+    else if (MazeSolver_canMoveTo(FACING_SOUTH, checkHasMovedOn) == 1)
     {
         MazeSolver_addOrientationMoves(FACING_SOUTH);
         MazeSolver_addMoveStraight();
@@ -102,11 +102,11 @@ void MazeSolver_executeNextMoves()
             move = moveBuffer[index];
             if (!move.isTurn)
             {
-                ROBUSMovement_moveStraight((float)move.direction, 20.0f, 50.0f);
+                //ROBUSMovement_moveStraight((float)move.direction, 20.0f, 50.0f);
             }
             else
             {
-                ROBUSMovement_turnOnSelf((float)move.direction, 0.15f, 90);
+                //ROBUSMovement_turnOnSelf((float)move.direction * -1, 0.15f, 90);
             }
             Serial.print("Direction : ");
             Serial.println(move.direction);
@@ -114,11 +114,11 @@ void MazeSolver_executeNextMoves()
             Serial.println(move.isTurn);
 
             MazeSolver_onMoveCompletion(move);
-            if (GetWall())
+            /*if (GetWall())
             {
               MazeSolver_setObstacle();
               return;
-            }
+            }*/
 
             Serial.print("Row : ");
             Serial.println(currentPosition_row);
@@ -133,12 +133,6 @@ void MazeSolver_addOrientationMoves(int wantedOrientation)
     int orientation = currentOrientation;
     int orientationDifference = orientation - wantedOrientation;
     int turnDirection = orientationDifference > 0 ? LEFT_TURN : RIGHT_TURN;
-
-    Serial.print("Wanted : ");
-    Serial.println(wantedOrientation);
-
-    Serial.print("Current : ");
-    Serial.println(orientation);
 
     if (orientationDifference != 0)
     {
@@ -474,10 +468,10 @@ void MazeSolver_setTestMaze()
     #pragma region Row_1
     maze.positions[0][0].members.canGoLeft = false;
     maze.positions[0][0].members.canGoFoward = false;
-    maze.positions[0][0].members.canGoRight = true;
+    maze.positions[0][0].members.canGoRight = false;
     maze.positions[0][0].members.canGoBackwards = false;
 
-    maze.positions[0][1].members.canGoLeft = true;
+    maze.positions[0][1].members.canGoLeft = false;
     maze.positions[0][1].members.canGoFoward = false;
     maze.positions[0][1].members.canGoRight = true;
     maze.positions[0][1].members.canGoBackwards = false;

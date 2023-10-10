@@ -20,10 +20,10 @@ void loop()
   MazeSolver_init();
   while (!MazeSolver_hasCompletedMaze())
   {
-    if (GetWall())
+    /*if (GetWall())
     {
       MazeSolver_setObstacle();
-    }
+    }*/
     MazeSolver_setNextMoves();
     MazeSolver_executeNextMoves();
   }
