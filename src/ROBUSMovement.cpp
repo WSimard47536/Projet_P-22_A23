@@ -257,22 +257,22 @@ void ROBUSMovement_turnOnSelf_test(float direction, float speed_pct, int turn_de
   ////// ROBOT A ///////
   //////////////////////
   //à modifier selon tests
-  //float Kc = 0.0007;
-  //float Ti = 20;  //Baisser pour 20
-  //float Kd_gauche = 0.9095; //90° tout petit peu pas assez
-  //float Kd_droite = 0.93325; //as good as it gets
-  //float distance_between_wheels = 18.7;
+  float Kc = 0.0069427506;
+  float Ti = 200;  //Baisser pour 20
+  float Kd_gauche = 0.953; //90° tout petit peu pas assez
+  float Kd_droite = 0.9555; //as good as it gets
+  float distance_between_wheels = 18.7;
   //////////////////////
 
 
   ////// ROBOT B ///////
   //////////////////////
-  //à modifier selon tests
+  /*à modifier selon tests
   float Kc = 0.0069427506; //0.00069427506
   float Ti = 200;
-  float Kd_gauche = 1; //0.92323
-  float Kd_droite = 1.0773; //1.002
-  float distance_between_wheels = 18.6; 
+  float Kd_gauche = 0.956; //0.92323
+  float Kd_droite = 0.956; //1.002 //1.077777
+  float distance_between_wheels = 18.6; */
   //////////////////////
   float Kd = 1; 
   if (direction == 1){
@@ -397,7 +397,7 @@ float PID_test(float Ubias, float proportional_const, float integral_const, floa
 
 float ROBUSMovement_turnOnSelf_math_test(float distance_between_wheels, float wheel_diameter, int degrees)
 {
-  uint32_t arc = distance_between_wheels * degrees / 360.0f;
-  arc = arc*3200.0f / (wheel_diameter);
-  return arc;
+  float arc = distance_between_wheels * degrees / 360.0f;
+  uint32_t tick = arc*3200.0f / (wheel_diameter);
+  return tick;
 }
