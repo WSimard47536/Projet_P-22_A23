@@ -16,14 +16,14 @@ void setup()
 void loop()
 {
   //waitForWhistle();
-  delay(5000);
+  delay(2000);
   MazeSolver_init();
   while (!MazeSolver_hasCompletedMaze())
   {
-    /*if (GetWall())
+    if (GetWall())
     {
       MazeSolver_setObstacle();
-    }*/
+    }
     MazeSolver_setNextMoves();
     MazeSolver_executeNextMoves();
   }

@@ -16,8 +16,8 @@ int currentOrientation;
 
 void MazeSolver_init()
 {
-    //MazeSolver_setBaseMaze();
-    MazeSolver_setTestMaze();
+    MazeSolver_setBaseMaze();
+    //MazeSolver_setTestMaze();
     MazeSolver_resetMoveBuffer();
     MazeSolver_resetMoveHistory();
     currentMoveIndex = 0;
@@ -102,11 +102,11 @@ void MazeSolver_executeNextMoves()
             move = moveBuffer[index];
             if (!move.isTurn)
             {
-                //ROBUSMovement_moveStraight((float)move.direction, 20.0f, 50.0f);
+                ROBUSMovement_moveStraight((float)move.direction, 20.0f, 50.0f);
             }
             else
             {
-                //ROBUSMovement_turnOnSelf((float)move.direction * -1, 0.15f, 90);
+                ROBUSMovement_turnOnSelf((float)move.direction * -1, 0.15f, 90);
             }
             Serial.print("Direction : ");
             Serial.println(move.direction);
@@ -114,16 +114,17 @@ void MazeSolver_executeNextMoves()
             Serial.println(move.isTurn);
 
             MazeSolver_onMoveCompletion(move);
-            /*if (GetWall())
-            {
-              MazeSolver_setObstacle();
-              return;
-            }*/
-
+            
             Serial.print("Row : ");
             Serial.println(currentPosition_row);
             Serial.print("Column : ");
             Serial.println(currentPosition_column);
+
+            if (GetWall())
+            {
+              MazeSolver_setObstacle();
+              return;
+            }
         }
     }
 }
