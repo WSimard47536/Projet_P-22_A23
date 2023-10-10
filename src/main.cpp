@@ -11,22 +11,27 @@ void setup()
 {
   BoardInit();
   InitializeProximitySensors();
+  MazeSolver_init();
 }
 
 void loop()
 {
   //waitForWhistle();
-  delay(2000);
-  MazeSolver_init();
-  while (!MazeSolver_hasCompletedMaze())
+  if (ROBUS_IsBumper(3))
   {
-    if (GetWall())
+    Serial.print("bumper");
+    MazeSolver_init();
+    while (!MazeSolver_hasCompletedMaze())
     {
-      MazeSolver_setObstacle();
+      if (GetWall())
+      {
+        MazeSolver_setObstacle();
+      }
+      MazeSolver_setNextMoves();
+      MazeSolver_executeNextMoves();
     }
-    MazeSolver_setNextMoves();
-    MazeSolver_executeNextMoves();
   }
+  
   //ROBUSMovement_turnOnSelf(LEFT_TURN, 0.15f, 90);
   //ROBUSMovement_moveStraight(FORWARD, 20, 50);
 }

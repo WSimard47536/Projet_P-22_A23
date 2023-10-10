@@ -62,6 +62,7 @@ void MazeSolver_executeNextMoves();
 
 void MazeSolver_addOrientationMoves(int wantedOrientation);
 void MazeSolver_addMoveStraight();
+void MazeSolver_addMoveToPosition(int row, int column);
 bool MazeSolver_canMoveTo(int direction, bool checkHasMovedOn);
 bool MazeSolver_hasMovedOn(int direction);
 
