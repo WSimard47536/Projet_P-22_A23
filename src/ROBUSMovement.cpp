@@ -109,15 +109,15 @@ void ROBUSMovement_adjustDirection(float speed_pct, int delay_ms, float distance
 }
 
 
-
-float ROBUSMovement_turnOnSelf_math(float distance_between_wheels, float wheel_diameter, int degrees)
+/*
+float ROBUSMovement_turnOnSelf_math_old(float distance_between_wheels, float wheel_diameter, int degrees)
 {
   uint32_t arc = distance_between_wheels * degrees * 3200;
   arc = arc / (360*wheel_diameter);
   return arc;
 }
-
-float PID(float Kc, float Ti, float set_point, float process_variable, int nbr_cycle, float start_time, float current_time, float Ubias, float* erreur_integrale)
+/*
+float PID_old(float Kc, float Ti, float set_point, float process_variable, int nbr_cycle, float start_time, float current_time, float Ubias, float* erreur_integrale)
 {
   
   float Ki = Kc/Ti;
@@ -136,11 +136,11 @@ float PID(float Kc, float Ti, float set_point, float process_variable, int nbr_c
   return speedLeft;
 
 }
-
+/*
 // direction : direction which to go (LEFT or RIGHT) (-1 or 1)
 // speed_pct : speed as a percentage, main speed divided by 2
 // turn_degrees : turn in degrees
-void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees)
+void ROBUSMovement_turnOnSelf_old(float direction, float speed_pct, int turn_degrees)
 {
   //Serial.println("Début tourner");
   
@@ -246,33 +246,32 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
     }
   }
 }
-
+*/
 // direction : direction which to go (LEFT or RIGHT) (-1 or 1)
 // speed_pct : speed as a percentage, main speed divided by 2
 // turn_degrees : turn in degrees
-void ROBUSMovement_turnOnSelf_test(float direction, float speed_pct, int turn_degrees)
+void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees)
 {
   //Serial.println("Début tourner");
   
+  float Kc = 0.0069427506;
+  float Ti = 200;  //Baisser pour 20
+
   ////// ROBOT A ///////
   //////////////////////
   //à modifier selon tests
-  float Kc = 0.0069427506;
-  float Ti = 200;  //Baisser pour 20
-  float Kd_gauche = 0.953; //90° tout petit peu pas assez
-  float Kd_droite = 0.9555; //as good as it gets
-  float distance_between_wheels = 18.7;
+  //float Kd_gauche = 0.953; 
+  //float Kd_droite = 0.9555; 
+  //float distance_between_wheels = 18.7;
   //////////////////////
 
 
   ////// ROBOT B ///////
   //////////////////////
-  /*à modifier selon tests
-  float Kc = 0.0069427506; //0.00069427506
-  float Ti = 200;
+  //à modifier selon tests
   float Kd_gauche = 0.956; //0.92323
   float Kd_droite = 0.956; //1.002 //1.077777
-  float distance_between_wheels = 18.6; */
+  float distance_between_wheels = 18.6; 
   //////////////////////
   float Kd = 1; 
   if (direction == 1){
@@ -284,7 +283,7 @@ void ROBUSMovement_turnOnSelf_test(float direction, float speed_pct, int turn_de
   float degrees = turn_degrees * Kd;
   float wheel_size = 7.5;
 
-  int wanted_movement = ROBUSMovement_turnOnSelf_math_test(distance_between_wheels, wheel_size, degrees);
+  int wanted_movement = ROBUSMovement_turnOnSelf_math(distance_between_wheels, wheel_size, degrees);
 
   float erreur_integrale = 0;
   
@@ -329,7 +328,7 @@ void ROBUSMovement_turnOnSelf_test(float direction, float speed_pct, int turn_de
       //Serial.print("right: ");
       Serial.println(right);
 
-      float nouvelle_vitesse = direction * PID_test(speed_pct, Kc, Ti, 0, right, left, temps_derniere_intervalle, 0, &erreur_integrale);
+      float nouvelle_vitesse = direction * PID(speed_pct, Kc, Ti, 0, right, left, temps_derniere_intervalle, 0, &erreur_integrale);
       if (!(nouvelle_vitesse < -0.4) && !(nouvelle_vitesse > 0.4)){
         MOTOR_SetSpeed(LEFT_MOTOR, nouvelle_vitesse);
       }
@@ -361,7 +360,7 @@ void ROBUSMovement_turnOnSelf_test(float direction, float speed_pct, int turn_de
 
 }
 
-float PID_test(float Ubias, float proportional_const, float integral_const, float derivative_const, float set_point, float process_variable, float time, float* previousDerivativeError, float* errorSum)
+float PID(float Ubias, float proportional_const, float integral_const, float derivative_const, float set_point, float process_variable, float time, float* previousDerivativeError, float* errorSum)
 {
   // Sampling interval = time since last PID.
   // This time variable needs to be reset
@@ -395,7 +394,7 @@ float PID_test(float Ubias, float proportional_const, float integral_const, floa
   return newSpeed;
 }
 
-float ROBUSMovement_turnOnSelf_math_test(float distance_between_wheels, float wheel_diameter, int degrees)
+float ROBUSMovement_turnOnSelf_math(float distance_between_wheels, float wheel_diameter, int degrees)
 {
   float arc = distance_between_wheels * degrees / 360.0f;
   uint32_t tick = arc*3200.0f / (wheel_diameter);
