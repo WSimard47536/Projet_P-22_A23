@@ -16,8 +16,8 @@ int currentOrientation;
 
 void MazeSolver_init()
 {
-    //MazeSolver_setBaseMaze();
-    MazeSolver_setTestMaze();
+    MazeSolver_setBaseMaze();
+    //MazeSolver_setTestMaze();
     MazeSolver_resetMoveBuffer();
     MazeSolver_resetMoveHistory();
     currentMoveIndex = 0;
@@ -141,11 +141,11 @@ void MazeSolver_executeNextMoves()
             move = moveBuffer[index];
             if (!move.isTurn)
             {
-                //ROBUSMovement_moveStraight((float)move.direction, 20.0f, 50.0f);
+                ROBUSMovement_moveStraight((float)move.direction, 20.0f, 50.0f);
             }
             else
             {
-                //ROBUSMovement_turnOnSelf((float)move.direction * -1, 0.15f, 90);
+                ROBUSMovement_turnOnSelf((float)move.direction * -1, 0.15f, 90);
             }
             Serial.print("Direction : ");
             Serial.println(move.direction);
@@ -159,11 +159,11 @@ void MazeSolver_executeNextMoves()
             Serial.print("Column : ");
             Serial.println(currentPosition_column);
 
-            /*if (GetWall())
+            if (GetWall())
             {
               MazeSolver_setObstacle();
               return;
-            }*/
+            }
         }
     }
 }
@@ -215,14 +215,23 @@ void MazeSolver_onMoveCompletion(Move move)
 
     if (move.isTurn)
     {
+        Serial.print("Old orientation : ");
+        Serial.println(currentOrientation);
         currentOrientation = (currentOrientation + move.direction * - 1) % 4; // à tester
         if (currentOrientation == -1)
         {
           currentOrientation = FACING_SOUTH;
         }
+        Serial.print("New orientation : ");
+        Serial.println(currentOrientation);
     }
     else
     {
+        Serial.print("Old position row : ");
+        Serial.println(currentPosition_row);
+
+        Serial.print("Old position column : ");
+        Serial.println(currentPosition_column);
         if (currentOrientation % 2 == 1) //forward or backward
         {
             if (currentOrientation == FACING_NORTH)
@@ -249,6 +258,11 @@ void MazeSolver_onMoveCompletion(Move move)
                 currentPosition_column -= move.direction;
             }
         }
+        Serial.print("New position row : ");
+        Serial.println(currentPosition_row);
+
+        Serial.print("New position column : ");
+        Serial.println(currentPosition_column);
     }
     maze.positions[currentPosition_row][currentPosition_column].members.hasMovedOn = true;
 }
