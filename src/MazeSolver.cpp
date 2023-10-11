@@ -45,13 +45,60 @@ void MazeSolver_resetMoveHistory()
 
 void MazeSolver_setNextMoves()
 {
-    if (!MazeSolver_checkSetMove(true))
+    int possibleDirections[NUMBER_OF_ORIENTATIONS] = {-1,-1,-1,-1};
+    //int moveCount = 0;
+
+    if (!MazeSolver_checkSetMove(true, possibleDirections))
     {
-        MazeSolver_checkSetMove(false);
+      MazeSolver_checkSetMove(false, possibleDirections);
     }
+
+    /*for (int direction : possibleDirections)
+    {
+      if (direction != -1)
+      {
+        moveCount++;
+      }
+    }
+
+    if (!MazeSolver_checkSetMove(true, possibleMoves))
+    {
+        MazeSolver_checkSetMove(false, possibleMoves);
+        if (moveCount > 1)
+        {
+          for (int direction : possibleDirections)
+          {
+            for (int i = 0; i < currentMoveIndex - 1; i++)
+            {
+              Move moveToCompare = moveHistory[currentMoveIndex - i];
+              if (!moveToCompare.isTurn)
+              {
+                switch (direction)
+                {
+                case FACING_NORTH:
+
+                  break;
+
+                default:
+                  break;
+                }
+              }
+            }
+          }
+        }
+        MazeSolver_addOrientationMoves(possibleDirections[0]);
+        MazeSolver_addMoveStraight();
+    }
+    else
+    {
+      MazeSolver_addOrientationMoves(possibleDirections[0]);
+      MazeSolver_addMoveStraight();
+    }*/
+
+    
 }
 
-bool MazeSolver_checkSetMove(bool checkHasMovedOn)
+bool MazeSolver_checkSetMove(bool checkHasMovedOn, int possibleDirections[NUMBER_OF_ORIENTATIONS])
 {
     MazeSolver_resetMoveBuffer();
     bufferIndex = 0;
@@ -61,10 +108,6 @@ bool MazeSolver_checkSetMove(bool checkHasMovedOn)
     {
         MazeSolver_addOrientationMoves(FACING_NORTH);
         MazeSolver_addMoveStraight();
-        /*if (currentPosition_row < MAZE_NUMBER_OF_ROWS - 2)
-        {
-            MazeSolver_addMoveStraight();
-        }*/
     }
     else if (MazeSolver_canMoveTo(FACING_WEST, checkHasMovedOn) == 1)
     {
@@ -80,10 +123,6 @@ bool MazeSolver_checkSetMove(bool checkHasMovedOn)
     {
         MazeSolver_addOrientationMoves(FACING_SOUTH);
         MazeSolver_addMoveStraight();
-        /*if (currentPosition_row > 1)
-        {
-            MazeSolver_addMoveStraight();
-        }*/
     }
     else //dead end if checkHasMovedOn is true
     {

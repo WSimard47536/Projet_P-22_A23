@@ -59,7 +59,7 @@ void MazeSolver_resetMoveBuffer();
 void MazeSolver_setObstacle();
 
 void MazeSolver_setNextMoves();
-bool MazeSolver_checkSetMove(bool checkHasMovedOn);
+bool MazeSolver_checkSetMove(bool checkHasMovedOn, int possibleMoves[NUMBER_OF_ORIENTATIONS]);
 void MazeSolver_executeNextMoves();
 
 void MazeSolver_addOrientationMoves(int wantedOrientation);
