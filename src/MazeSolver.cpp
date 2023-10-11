@@ -141,7 +141,7 @@ void MazeSolver_executeNextMoves()
             move = moveBuffer[index];
             if (!move.isTurn)
             {
-                ROBUSMovement_moveStraight((float)move.direction, 20.0f, 50.0f);
+                ROBUSMovement_moveStraight((float)move.direction, 20.0f, 48.5f); // a revoir
             }
             else
             {

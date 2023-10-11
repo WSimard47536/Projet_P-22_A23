@@ -16,8 +16,20 @@ void setup()
 
 void loop()
 {
-  //waitForWhistle();
-  if (ROBUS_IsBumper(3))
+  waitForWhistle();
+
+  MazeSolver_init();
+  while (!MazeSolver_hasCompletedMaze())
+  {
+    if (GetWall())
+    {
+      MazeSolver_setObstacle();
+    }
+    MazeSolver_setNextMoves();
+    MazeSolver_executeNextMoves();
+  }
+
+  /*if (ROBUS_IsBumper(3))
   {
     MazeSolver_init();
     while (!MazeSolver_hasCompletedMaze())
@@ -29,7 +41,7 @@ void loop()
       MazeSolver_setNextMoves();
       MazeSolver_executeNextMoves();
     }
-  }
+  }*/
   //ROBUSMovement_turnOnSelf(LEFT_TURN, 0.15f, 90);
   //ROBUSMovement_moveStraight(FORWARD, 20, 50);
 }

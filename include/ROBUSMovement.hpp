@@ -1,7 +1,7 @@
 #pragma once
 #include <LibRobus.h>
 #include "ROBUSAcceleration.hpp"
-#define CONSTANTE_RATIO 1000
+#define CONSTANTE_RATIO 950
 
 #define FORWARD 1.0f
 #define BACKWARD -1.0f
