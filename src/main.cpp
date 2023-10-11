@@ -17,19 +17,23 @@ void setup()
 void loop()
 {
   //waitForWhistle();
-  if (ROBUS_IsBumper(3))
+  if (!ROBUS_IsBumper(3))
   {
-    Serial.print("bumper");
     MazeSolver_init();
     while (!MazeSolver_hasCompletedMaze())
     {
-      if (GetWall())
+      /*if (GetWall())
       {
         MazeSolver_setObstacle();
-      }
+      }*/
       MazeSolver_setNextMoves();
       MazeSolver_executeNextMoves();
     }
+  }
+  
+  for (;;)
+  {
+    
   }
   
   //ROBUSMovement_turnOnSelf(LEFT_TURN, 0.15f, 90);
