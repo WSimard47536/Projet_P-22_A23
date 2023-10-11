@@ -144,26 +144,25 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
 {
   Serial.println("Début tourner");
   
-////// ROBOT A ///////
+  float Kc = 0.0069427506;
+  float Ti = 200;  //Baisser pour 20
+
+  ////// ROBOT A ///////
   //////////////////////
   //à modifier selon tests
-  /*float Kc = 0.0007;
-  float Ti = 900;  //Baisser pour 20
-  float Kd_gauche = 0.9095; //90° tout petit peu pas assez
-  float Kd_droite = 0.93325; //as good as it gets
-  float distance_between_wheels = 18.7;*/
+  float Kd_gauche = 0.93; 
+  float Kd_droite = 0.93; 
+  float distance_between_wheels = 18.7;
   //////////////////////
 
 
   ////// ROBOT B ///////
   //////////////////////
   //à modifier selon tests
-  float Kc = 0.0007;
-  float Ti = 500;
-  float Kd_gauche = 0.90; //0.92323
-  float Kd_droite = 0.952; 
-  float distance_between_wheels = 18.5;
-  //////////////////////
+  //float Kd_gauche = 0.933; //0.92323
+  //float Kd_droite = 0.935; //1.002 //1.077777
+  //float distance_between_wheels = 18.6; 
+
   float Kd = 1; 
   if (direction == 1){
     Kd = Kd_droite;

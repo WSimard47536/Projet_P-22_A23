@@ -43,5 +43,6 @@ void loop()
     }
   }*/
   //ROBUSMovement_turnOnSelf(LEFT_TURN, 0.15f, 90);
+  //delay(1500);
   //ROBUSMovement_moveStraight(FORWARD, 20, 50);
 }
