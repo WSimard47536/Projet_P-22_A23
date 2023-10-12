@@ -70,6 +70,7 @@ bool MazeSolver_hasMovedOn(int direction);
 
 void MazeSolver_onMoveCompletion(Move move);
 bool MazeSolver_hasCompletedMaze();
+void MazeSolver_returnToStart();
 
 void MazeSolver_setBaseMaze();
 void MazeSolver_setTestMaze();

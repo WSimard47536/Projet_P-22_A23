@@ -28,7 +28,8 @@ void loop()
     MazeSolver_setNextMoves();
     MazeSolver_executeNextMoves();
   }
-
+  ROBUSMovement_moveStraight(FORWARD,20.0f,50.0f);
+  MazeSolver_returnToStart();
   /*if (ROBUS_IsBumper(3))
   {
     MazeSolver_init();

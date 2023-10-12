@@ -14,6 +14,9 @@ int currentPosition_row;
 int currentPosition_column;
 int currentOrientation;
 
+float distanceRobotA = 48.5f;
+float distanceRobotB = 49.0f;
+
 void MazeSolver_init()
 {
     MazeSolver_setBaseMaze();
@@ -141,8 +144,6 @@ void MazeSolver_executeNextMoves()
             move = moveBuffer[index];
             if (!move.isTurn)
             {
-                float distanceRobotA = 48.5f;
-                float distanceRobotB = 49.0f;
                 ROBUSMovement_moveStraight((float)move.direction, 20.0f, distanceRobotA); // a revoir
             }
             else
@@ -272,6 +273,27 @@ void MazeSolver_onMoveCompletion(Move move)
 bool MazeSolver_hasCompletedMaze()
 {
     return currentPosition_row == MAZE_NUMBER_OF_ROWS - 1;
+}
+
+void MazeSolver_returnToStart()
+{
+    switch (currentPosition_column)
+    {
+    case 0:
+        ROBUSMovement_turnOnSelf(RIGHT_TURN * -1, 0.15f, 90);
+        ROBUSMovement_moveStraight((float)move.direction, 20.0f, distanceRobotA);
+        ROBUSMovement_turnOnSelf(RIGHT_TURN * -1, 0.15f, 90);
+        ROBUSMovement_moveStraight((float)move.direction, 20.0f, 500.0f);
+        break;
+    case 2:
+        ROBUSMovement_turnOnSelf(LEFT_TURN * -1, 0.15f, 90);
+        ROBUSMovement_moveStraight((float)move.direction, 20.0f, distanceRobotA);
+        ROBUSMovement_turnOnSelf(LEFT_TURN * -1, 0.15f, 90);
+        ROBUSMovement_moveStraight((float)move.direction, 20.0f, 500.0f);
+        break;
+    default:
+        break;
+    }
 }
 
 bool MazeSolver_canMoveTo(int direction, bool checkHasMovedOn)
