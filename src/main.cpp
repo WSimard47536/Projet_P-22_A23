@@ -30,6 +30,7 @@ void loop()
   }
   ROBUSMovement_moveStraight(FORWARD,20.0f,50.0f);
   MazeSolver_returnToStart();
+
   /*if (ROBUS_IsBumper(3))
   {
     MazeSolver_init();
@@ -44,6 +45,8 @@ void loop()
     }
   }*/
   //ROBUSMovement_turnOnSelf(LEFT_TURN, 0.15f, 90);
+  //delay(1500);
+  //ROBUSMovement_turnOnSelf(RIGHT_TURN, 0.15f, 90);
   //delay(1500);
   //ROBUSMovement_moveStraight(FORWARD, 20, 50);
 }

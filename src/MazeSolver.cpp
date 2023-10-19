@@ -19,8 +19,8 @@ float distanceRobotB = 49.0f;
 
 void MazeSolver_init()
 {
-    MazeSolver_setBaseMaze();
-    //MazeSolver_setTestMaze();
+    //MazeSolver_setBaseMaze();
+    MazeSolver_setTestMaze();
     MazeSolver_resetMoveBuffer();
     MazeSolver_resetMoveHistory();
     currentMoveIndex = 0;
@@ -281,15 +281,15 @@ void MazeSolver_returnToStart()
     {
     case 0:
         ROBUSMovement_turnOnSelf(RIGHT_TURN * -1, 0.15f, 90);
-        ROBUSMovement_moveStraight((float)move.direction, 20.0f, distanceRobotA);
+        ROBUSMovement_moveStraight(FORWARD, 20.0f, distanceRobotA);
         ROBUSMovement_turnOnSelf(RIGHT_TURN * -1, 0.15f, 90);
-        ROBUSMovement_moveStraight((float)move.direction, 20.0f, 500.0f);
+        ROBUSMovement_moveStraight(FORWARD, 20.0f, 500.0f);
         break;
     case 2:
         ROBUSMovement_turnOnSelf(LEFT_TURN * -1, 0.15f, 90);
-        ROBUSMovement_moveStraight((float)move.direction, 20.0f, distanceRobotA);
+        ROBUSMovement_moveStraight(FORWARD, 20.0f, distanceRobotA);
         ROBUSMovement_turnOnSelf(LEFT_TURN * -1, 0.15f, 90);
-        ROBUSMovement_moveStraight((float)move.direction, 20.0f, 500.0f);
+        ROBUSMovement_moveStraight(FORWARD, 20.0f, 500.0f);
         break;
     default:
         break;

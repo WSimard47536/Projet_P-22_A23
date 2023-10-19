@@ -151,7 +151,7 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
   //////////////////////
   //à modifier selon tests
   float Kd_gauche = 0.93; 
-  float Kd_droite = 0.93; 
+  float Kd_droite = 0.925; 
   float distance_between_wheels = 18.7;
   //////////////////////
 
@@ -159,9 +159,9 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
   ////// ROBOT B ///////
   //////////////////////
   //à modifier selon tests
-  //float Kd_gauche = 0.933; //0.92323
-  //float Kd_droite = 0.935; //1.002 //1.077777
-  //float distance_between_wheels = 18.6; 
+  /*float Kd_gauche = 0.933; //0.92323
+  float Kd_droite = 0.937; //1.002 //1.077777
+  float distance_between_wheels = 18.6;*/
 
   float Kd = 1; 
   if (direction == 1){
@@ -170,7 +170,7 @@ void ROBUSMovement_turnOnSelf(float direction, float speed_pct, int turn_degrees
   else{
     Kd = Kd_gauche;
   }
-  float degrees = turn_degrees * Kd;
+  float degrees = (float)turn_degrees * Kd;
   float wheel_size = 7.5;
 
   int wanted_movement = ROBUSMovement_turnOnSelf_math(distance_between_wheels, wheel_size, degrees);
