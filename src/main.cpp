@@ -1,22 +1,25 @@
-#include "ROBUSMovement.hpp"
+#include "ROBUSMovement_V2.hpp"
 #include "ROBUSSensors.hpp"
 #include "WhistlesoundDetector.hpp"
 #include "WhistleDetector.hpp"
 #include "ObstacleDetector.hpp"
-#include "MazeSolver.hpp"
+//#include "MazeSolver.hpp"
 
-#include "integrationTesting/ROBUSMovement_test.hpp"
+//#include "integrationTesting/ROBUSMovement_test.hpp"
 
 void setup()
 {
   BoardInit();
   InitializeProximitySensors();
-  MazeSolver_init();
+  //MazeSolver_init();
 }
 
 void loop()
 {
-  waitForWhistle();
+
+  ROBUSMovement_moveStraight(FORWARD, 0.2f, 100.0f);
+
+  /*waitForWhistle();
 
   MazeSolver_init();
   while (!MazeSolver_hasCompletedMaze())
@@ -29,7 +32,7 @@ void loop()
     MazeSolver_executeNextMoves();
   }
   ROBUSMovement_moveStraight(FORWARD,20.0f,50.0f);
-  MazeSolver_returnToStart();
+  MazeSolver_returnToStart();*/
 
   /*if (ROBUS_IsBumper(3))
   {
