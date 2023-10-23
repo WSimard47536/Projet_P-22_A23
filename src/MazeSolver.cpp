@@ -148,7 +148,7 @@ void MazeSolver_executeNextMoves()
             }
             else
             {
-                ROBUSMovement_turnOnSelf((float)move.direction * -1, 0.15f, 90);
+                //ROBUSMovement_turnOnSelf((float)move.direction * -1, 0.15f, 90);
             }
             Serial.print("Direction : ");
             Serial.println(move.direction);
@@ -277,7 +277,7 @@ bool MazeSolver_hasCompletedMaze()
 
 void MazeSolver_returnToStart()
 {
-    switch (currentPosition_column)
+    /*switch (currentPosition_column)
     {
     case 0:
         ROBUSMovement_turnOnSelf(RIGHT_TURN * -1, 0.15f, 90);
@@ -293,7 +293,7 @@ void MazeSolver_returnToStart()
         break;
     default:
         break;
-    }
+    }*/
 }
 
 bool MazeSolver_canMoveTo(int direction, bool checkHasMovedOn)
