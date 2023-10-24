@@ -1,7 +1,18 @@
 #include "ROBUSMovement.hpp"
 
+//ErrorSum values will be recorded through
+//multiple PIDs to adjust through time
 float errorSumStraight = 0.0f;
 float errorSumTurn = 0.0f;
+
+//These parameters are reused and reset
+// every time a new movement is started
+float currentPulseRight = 0.0f;
+float currentPulseLeft  = 0.0f;
+float rightPulse   = 0.0f;
+float leftPulse    = 0.0f;
+unsigned long previousInterval_ms = 0;
+float previousValue = 0.0f;
 
 /**
  * @brief Stops the robot by putting
@@ -17,7 +28,8 @@ void ROBUSMovement_stop()
 
 /**
  * @brief Resets the movement parameters
- * affecting the PWM
+ * affecting the PID (when different
+ * movements)
  * 
  * @return void 
  */
@@ -27,6 +39,29 @@ void ROBUSMovement_resetParameters()
   errorSumTurn = 0.0f;
 }
 
+/**
+ * @brief Resets the movement variables
+ * affecting the PID (every movement).
+ * Is called in every movement function.
+ * 
+ * Resets the encoders
+ * Sets the current pulses,
+ * pulses, previous intervals
+ * and previous variables to 0.
+ * 
+ * @return void 
+ */
+void ROBUSMovement_initMovement()
+{
+  ENCODER_Reset(LEFT_ENCODER);
+  ENCODER_Reset(RIGHT_ENCODER);
+  currentPulseRight = 0.0f;
+  currentPulseLeft  = 0.0f;
+  rightPulse   = 0.0f;
+  leftPulse    = 0.0f;
+  previousInterval_ms = 0;
+  previousValue = 0.0f;
+}
 
 
 /**
@@ -99,15 +134,15 @@ float ROBUSMovement_moveStraight_math(int distance_cm)
  * @param wantedValue 
  * @return float 
  */
-float PID(float baseValue, float proportional, float integral, float derivative, float currentValue, float wantedValue, float* errorSum, float* previousValue)
+float PID(float baseValue, float proportional, float integral, float derivative, float currentValue, float wantedValue, float errorSum, float previousValue)
 {
   float error = wantedValue-currentValue;
-  float derivativeError = currentValue-(*previousValue);
-  *errorSum += error;
+  float derivativeError = currentValue-(previousValue);
+  errorSum += error;
 
-  float PID = baseValue + proportional*error + integral*(*errorSum) + derivative*(derivativeError);
+  float PID = baseValue + proportional*error + integral*(errorSum) + derivative*(derivativeError);
 
-  *previousValue = currentValue;
+  previousValue = currentValue;
 
   return PID;
 }
@@ -133,8 +168,7 @@ float PID(float baseValue, float proportional, float integral, float derivative,
  */
 void ROBUSMovement_moveStraight_cm(float direction, float speed_pct, float distance_cm)
 {
-  ENCODER_Reset(LEFT_ENCODER);
-  ENCODER_Reset(RIGHT_ENCODER);
+  
 
   float wantedPulse = ROBUSMovement_moveStraight_math(distance_cm);
   //Serial.println(wantedPulse);
@@ -142,14 +176,7 @@ void ROBUSMovement_moveStraight_cm(float direction, float speed_pct, float dista
   speed_pct = direction*speed_pct;
   float newSpeed = speed_pct;
 
-  float currentPulseRight = 0.0f;
-  float currentPulseLeft  = 0.0f;
-  float rightPulse   = 0.0f;
-  float leftPulse    = 0.0f;
-  
-  unsigned long previousInterval_ms = 0;
-
-  float previousProcessVariable = 0.0f;
+  ROBUSMovement_initMovement();
 
   MOTOR_SetSpeed(LEFT_MOTOR, speed_pct);
   MOTOR_SetSpeed(RIGHT_MOTOR, speed_pct);  
@@ -164,7 +191,7 @@ void ROBUSMovement_moveStraight_cm(float direction, float speed_pct, float dista
       currentPulseRight += rightPulse;
       currentPulseLeft += leftPulse;
 
-      newSpeed = PID(speed_pct, KP, KI, KD, leftPulse, rightPulse, &errorSumStraight, &previousProcessVariable);
+      newSpeed = PID(speed_pct, KP, KI, KD, leftPulse, rightPulse, errorSumStraight, previousValue);
 
       if((newSpeed < 0.4f) && (newSpeed > -0.4f)) MOTOR_SetSpeed(LEFT_MOTOR, newSpeed);
 
@@ -204,27 +231,16 @@ void ROBUSMovement_moveStraight_cm(float direction, float speed_pct, float dista
  */
 void ROBUSMovement_turnOnSelf_deg(float direction, float speed_pct, float degrees)
 {
-  ENCODER_Reset(LEFT_ENCODER);
-  ENCODER_Reset(RIGHT_ENCODER);
-
   float wantedPulse = ROBUSMovement_turnOnSelf_math(degrees);
   //Serial.println(wantedPulse);
 
   float speedRight = -1.0f*direction*speed_pct;
-  float speedLeft  = direction*speed_pct;
-  float newSpeedLeft = speedLeft;
+  float newSpeedLeft  = direction*speed_pct;
 
-  float currentPulseRight = 0.0f;
-  float currentPulseLeft  = 0.0f;
-  float rightPulse   = 0.0f;
-  float leftPulse    = 0.0f;
-  
-  unsigned long previousInterval_ms = 0;
-
-  float previousProcessVariable = 0.0f;
+  ROBUSMovement_initMovement();
 
   MOTOR_SetSpeed(LEFT_MOTOR, speedRight);
-  MOTOR_SetSpeed(RIGHT_MOTOR, speedLeft);  
+  MOTOR_SetSpeed(RIGHT_MOTOR, newSpeedLeft);  
 
   unsigned long currentInterval_ms  = millis();
   while (currentPulseRight <= wantedPulse)
@@ -235,7 +251,7 @@ void ROBUSMovement_turnOnSelf_deg(float direction, float speed_pct, float degree
       currentPulseRight += rightPulse;
       currentPulseLeft += leftPulse;
 
-      newSpeedLeft = PID(speed_pct, KP, KI, KD, leftPulse, rightPulse, &errorSumTurn, &previousProcessVariable);
+      newSpeedLeft = PID(speed_pct, KP, KI, KD, leftPulse, rightPulse, errorSumTurn, previousValue);
 
       if((newSpeedLeft < 0.4f) && (newSpeedLeft > -0.4f)) MOTOR_SetSpeed(LEFT_MOTOR, newSpeedLeft);
 
@@ -284,14 +300,7 @@ void ROBUSMovement_moveStraight(float direction, float speed_pct)
   speed_pct = direction*speed_pct;
   float newSpeed = speed_pct;
 
-  float currentPulseRight = 0.0f;
-  float currentPulseLeft  = 0.0f;
-  float rightPulse   = 0.0f;
-  float leftPulse    = 0.0f;
-  
-  unsigned long previousInterval_ms = 0;
-
-  float previousProcessVariable = 0.0f;
+  ROBUSMovement_initMovement();
 
   bool forwardStatus = true;
 
@@ -307,7 +316,7 @@ void ROBUSMovement_moveStraight(float direction, float speed_pct)
       currentPulseRight += rightPulse;
       currentPulseLeft += leftPulse;
 
-      newSpeedLeft = PID(speedLeft, KP, KI, KD, leftPulse, rightPulse, &errorSumStraight, &previousProcessVariable);
+      newSpeedLeft = PID(speedLeft, KP, KI, KD, leftPulse, rightPulse, errorSumStraight, previousValue);
 
       if((speedLeft < 0.4f) && (speedLeft > -0.4f)) MOTOR_SetSpeed(LEFT_MOTOR, newSpeedLeft);
 

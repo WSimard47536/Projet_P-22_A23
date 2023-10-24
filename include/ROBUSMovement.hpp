@@ -35,6 +35,10 @@
 
 void ROBUSMovement_stop();
 
+void ROBUSMovement_resetParameters();
+
+void ROBUSMovement_initMovement();
+
 float ROBUSMovement_turnOnSelf_math(int degrees);
 
 float ROBUSMovement_moveStraight_math(int distance_cm);
