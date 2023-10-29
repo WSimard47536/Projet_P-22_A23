@@ -2,8 +2,8 @@
 #include <LibRobus.h>
 
 #define CIRCUMFERENCE_WHEEL (3.1416*DIAMETER_WHEEL)
-#define DISTANCE_BT_WHEEL 19.6f // rayon entre les deux roues en cm 
-#define DIAMETER_WHEEL 7.6f // diametre de la roue (cm)
+#define DISTANCE_BT_WHEEL 18.6f // diamètre entre les deux roues en cm  //18.6f A et 19.2f B
+#define DIAMETER_WHEEL 7.7f // diametre de la roue (cm)
 
 // ROBUS CONSTANTS
 #define LEFT_MOTOR 0
@@ -18,16 +18,16 @@
 #define LEFT_TURN -1.0f
 
 // PID CONSTANTS
-#define PID_INTERVAL_MS 25.0l
+#define PID_INTERVAL_MS 25.0l //25
 
-#define KU 0.03f
-#define TU 50.0f
+#define KU 0.004f //0.03
+#define TU 40.0f //50.0f STRAIGHT
 
-#define TI (TU)
+#define TI (TU/2.0f)
 #define TD (TU/8.0f)
 #define KP (KU/2.5f)
 #define KI (KU/TI)
-#define KD 0 //(KU*TD) to be added in later after more testing.
+#define KD 0.0005 //(KU*TD) to be added in later after more testing.
 
 
 

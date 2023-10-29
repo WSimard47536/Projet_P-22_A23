@@ -134,15 +134,15 @@ float ROBUSMovement_moveStraight_math(int distance_cm)
  * @param wantedValue 
  * @return float 
  */
-float PID(float baseValue, float proportional, float integral, float derivative, float currentValue, float wantedValue, float errorSum, float previousValue)
+float PID(float baseValue, float proportional, float integral, float derivative, float currentValue, float wantedValue, float* errorSum, float* previousValue)
 {
   float error = wantedValue-currentValue;
-  float derivativeError = currentValue-(previousValue);
-  errorSum += error;
+  float derivativeError = currentValue-(*previousValue);
+  *errorSum += error;
 
-  float PID = baseValue + proportional*error + integral*(errorSum) + derivative*(derivativeError);
+  float PID = baseValue + proportional*error + integral*(*errorSum) + derivative*(derivativeError);
 
-  previousValue = currentValue;
+  *previousValue = currentValue;
 
   return PID;
 }
@@ -170,13 +170,28 @@ void ROBUSMovement_moveStraight_cm(float direction, float speed_pct, float dista
 {
   
 
-  float wantedPulse = ROBUSMovement_moveStraight_math(distance_cm);
-  //Serial.println(wantedPulse);
+  float wantedPulse = (ROBUSMovement_moveStraight_math(distance_cm));
+  //float wantedPulse = 3200;
+  Serial.println(wantedPulse);
 
   speed_pct = direction*speed_pct;
   float newSpeed = speed_pct;
 
-  ROBUSMovement_initMovement();
+  //ROBUSMovement_initMovement();
+
+  ENCODER_Reset(LEFT_ENCODER);
+  ENCODER_Reset(RIGHT_ENCODER);
+  currentPulseRight = 0.0f;
+  currentPulseLeft  = 0.0f;
+  rightPulse   = 0.0f;
+  leftPulse    = 0.0f;
+  previousInterval_ms = 0;
+  previousValue = 0.0f;
+
+  //int previousEncoderInterval_ms = 0;
+
+  //float pulsePIDLeft = 0.0f;
+  //float pulsePIDRight = 0.0f;
 
   MOTOR_SetSpeed(LEFT_MOTOR, speed_pct);
   MOTOR_SetSpeed(RIGHT_MOTOR, speed_pct);  
@@ -184,30 +199,39 @@ void ROBUSMovement_moveStraight_cm(float direction, float speed_pct, float dista
   unsigned long currentInterval_ms  = millis();
   while (currentPulseRight <= wantedPulse)
   {
-
+    
     if((currentInterval_ms-previousInterval_ms)>PID_INTERVAL_MS){
       rightPulse = (float)ENCODER_ReadReset(RIGHT_ENCODER);
       leftPulse  = (float)ENCODER_ReadReset(LEFT_ENCODER);
-      currentPulseRight += rightPulse;
-      currentPulseLeft += leftPulse;
+      currentPulseRight += abs(rightPulse);
+      currentPulseLeft += abs(leftPulse);
 
-      newSpeed = PID(speed_pct, KP, KI, KD, leftPulse, rightPulse, errorSumStraight, previousValue);
+      newSpeed = PID(speed_pct, KP, KI, KD, abs(leftPulse), abs(rightPulse), &errorSumStraight, &previousValue);
 
       if((newSpeed < 0.4f) && (newSpeed > -0.4f)) MOTOR_SetSpeed(LEFT_MOTOR, newSpeed);
 
+      //pulsePIDRight = 0.0f;
+      //pulsePIDLeft = 0.0f;
+
       previousInterval_ms = currentInterval_ms;
+      
     }
+  
+    
+
     currentInterval_ms  = millis();
   }
   ROBUSMovement_stop();
-  /*
+  
   Serial.print("RIGHT :");
   Serial.println(currentPulseRight);
   Serial.print("LEFT :");
   Serial.println(currentPulseLeft);
   Serial.print("error sum :");
-  Serial.println(errorSum);
-  */
+  Serial.println(errorSumStraight);
+  //Serial.print("derivative :");
+  //Serial.println((pulsePIDLeft-(previousValue)));
+  
 }
 
 /**
@@ -232,42 +256,53 @@ void ROBUSMovement_moveStraight_cm(float direction, float speed_pct, float dista
 void ROBUSMovement_turnOnSelf_deg(float direction, float speed_pct, float degrees)
 {
   float wantedPulse = ROBUSMovement_turnOnSelf_math(degrees);
-  //Serial.println(wantedPulse);
+  Serial.println(wantedPulse);
 
   float speedRight = -1.0f*direction*speed_pct;
   float newSpeedLeft  = direction*speed_pct;
 
-  ROBUSMovement_initMovement();
+  //ROBUSMovement_initMovement();
+  ENCODER_Reset(LEFT_ENCODER);
+  ENCODER_Reset(RIGHT_ENCODER);
+  currentPulseRight = 0.0f;
+  currentPulseLeft  = 0.0f;
+  rightPulse   = 0.0f;
+  leftPulse    = 0.0f;
+  previousInterval_ms = 0;
+  previousValue = 0.0f;
 
-  MOTOR_SetSpeed(LEFT_MOTOR, speedRight);
-  MOTOR_SetSpeed(RIGHT_MOTOR, newSpeedLeft);  
+  MOTOR_SetSpeed(LEFT_MOTOR, newSpeedLeft);
+  MOTOR_SetSpeed(RIGHT_MOTOR, speedRight);  
 
   unsigned long currentInterval_ms  = millis();
-  while (currentPulseRight <= wantedPulse)
+  while (abs(currentPulseRight) <= wantedPulse)
   {
+
     if((currentInterval_ms-previousInterval_ms)>PID_INTERVAL_MS){
-      rightPulse = abs((float)ENCODER_ReadReset(RIGHT_ENCODER));
-      leftPulse  = abs((float)ENCODER_ReadReset(LEFT_ENCODER));
-      currentPulseRight += rightPulse;
-      currentPulseLeft += leftPulse;
 
-      newSpeedLeft = PID(speed_pct, KP, KI, KD, leftPulse, rightPulse, errorSumTurn, previousValue);
+      rightPulse = (float)ENCODER_ReadReset(RIGHT_ENCODER);
+      leftPulse  = (float)ENCODER_ReadReset(LEFT_ENCODER);
+      currentPulseRight += abs(rightPulse);
+      currentPulseLeft += abs(leftPulse);
+      
+      newSpeedLeft = PID(speed_pct, KP, KI, KD, abs(leftPulse), abs(rightPulse), &errorSumTurn, &previousValue);
 
-      if((newSpeedLeft < 0.4f) && (newSpeedLeft > -0.4f)) MOTOR_SetSpeed(LEFT_MOTOR, newSpeedLeft);
+      if((newSpeedLeft < 0.6f) && (newSpeedLeft > -0.6f)) MOTOR_SetSpeed(LEFT_MOTOR, newSpeedLeft);
 
       previousInterval_ms = currentInterval_ms;
     }
+
     currentInterval_ms  = millis();
   }
   ROBUSMovement_stop();
-  /*
+  
   Serial.print("RIGHT :");
   Serial.println(currentPulseRight);
   Serial.print("LEFT :");
   Serial.println(currentPulseLeft);
   Serial.print("error sum :");
-  Serial.println(errorSum);
-  */
+  Serial.println(errorSumTurn);
+  
 }
 
 

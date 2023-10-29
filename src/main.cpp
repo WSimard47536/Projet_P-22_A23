@@ -17,8 +17,9 @@ void setup()
 void loop()
 {
 
-  ROBUSMovement_moveStraight_cm(FORWARD, 0.2f, 100.0f);
-  delay(1000);
+  ROBUSMovement_moveStraight_cm(FORWARD, 0.3f, 50.0f);
+  //ROBUSMovement_turnOnSelf_deg(RIGHT_TURN, 0.2f, 90.0f); //86.4
+  delay(3000);
 
   /*waitForWhistle();
 
