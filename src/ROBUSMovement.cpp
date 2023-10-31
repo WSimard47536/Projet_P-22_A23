@@ -407,6 +407,7 @@ void ROBUSMovement_arcMove(double speed_pct, int color, int arcangle, int direct
   double theta = 0;
   if      (color == COLOR_GREEN)  theta = THETA_GREEN;
   else if (color == COLOR_YELLOW) theta = THETA_YELLOW;
+  else if (color == COLOR_BLUE)   theta = THETA_BLUE;
 
   ROBUSMovement_trigoMath(theta, direction);
 
@@ -452,9 +453,12 @@ void ROBUSMovement_EmergencyStop(){
     
     if((currentInterval_ms-previousInterval_ms)>PID_INTERVAL_MS){
       ROBUSMovement_acceleration();
+      MOTOR_SetSpeed(RIGHT_MOTOR, SpeedRightTrigo*currentSpeed);
+      MOTOR_SetSpeed(LEFT_MOTOR, SpeedLeftTrigo*currentSpeed);
+      previousInterval_ms = currentInterval_ms;
     }
 
-    currentInterval_ms  = millis();
+    currentInterval_ms = millis();
   }
 }
 
@@ -467,6 +471,7 @@ void ROBUSMovement_arcMoveTEST(int color, int arcangle, int direction){
   double theta = 0;
   if      (color == COLOR_GREEN)  theta = THETA_GREEN;
   else if (color == COLOR_YELLOW) theta = THETA_YELLOW;
+  else if (color == COLOR_BLUE)   theta = THETA_BLUE;
 
   ROBUSMovement_trigoMath(theta, direction);
 
@@ -481,8 +486,9 @@ void ROBUSMovement_arcMoveTEST(int color, int arcangle, int direction){
   MOTOR_SetSpeed(RIGHT_MOTOR, speedRight);  
 
   previousInterval_ms = 0;
-  unsigned long currentInterval_ms = millis();
 
+  unsigned long currentInterval_ms = millis();
+  
   while(abs(currentPulseLeft-currentPulseRight)<wantedPulseDiff){
     
     if((currentInterval_ms-previousInterval_ms)>PID_INTERVAL_MS){
@@ -498,11 +504,10 @@ void ROBUSMovement_arcMoveTEST(int color, int arcangle, int direction){
 
       if((speedLeft < 0.8f) && (speedLeft > -0.8f)) MOTOR_SetSpeed(LEFT_MOTOR, speedLeft);
 
-      MOTOR_SetSpeed(RIGHT_MOTOR, abs(SpeedRightTrigo*currentSpeed));
-
-      Serial.println(SpeedRightTrigo*currentSpeed);
-
+      MOTOR_SetSpeed(RIGHT_MOTOR, SpeedRightTrigo*currentSpeed);
+      
       previousInterval_ms = currentInterval_ms;
+
     }
 
     currentInterval_ms  = millis();

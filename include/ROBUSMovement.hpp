@@ -46,6 +46,7 @@
 
 #define THETA_GREEN 11
 #define THETA_YELLOW 5.5
+#define THETA_BLUE 18
 
 
 //FUNCTIONS
