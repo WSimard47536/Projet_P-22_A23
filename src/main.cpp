@@ -10,17 +10,25 @@
 void setup()
 {
   BoardInit();
-  InitializeProximitySensors();
+  //InitializeProximitySensors();
   //MazeSolver_init();
+  delay(100);
+  
 }
 
 void loop()
 {
 
-  ROBUSMovement_moveStraight_cm(FORWARD, 0.3f, 50.0f);
-  //ROBUSMovement_turnOnSelf_deg(RIGHT_TURN, 0.2f, 90.0f); //86.4
-  delay(3000);
+  //ROBUSMovement_moveStraight_cm(FORWARD, 0.3f, 50.0f);
+  //ROBUSMovement_turnOnSelf_deg(RIGHT_TURN, 0.2f, 90.0f); //86.4\
 
+  //ROBUSMovement_arcMove(0.4, COLOR_YELLOW, 90, RIGHT_TURN);
+  //ROBUSMovement_arcMoveTEST(COLOR_GREEN, 90, RIGHT_TURN);
+
+  MOTOR_SetSpeed(RIGHT_MOTOR, 0.1);
+  delay(1000);
+  MOTOR_SetSpeed(RIGHT_MOTOR, -0.1);
+  delay(1000);
   /*waitForWhistle();
 
   MazeSolver_init();

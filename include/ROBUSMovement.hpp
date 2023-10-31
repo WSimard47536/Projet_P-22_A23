@@ -29,6 +29,23 @@
 #define KI (KU/TI)
 #define KD 0.0005 //(KU*TD) to be added in later after more testing.
 
+#define STATUS_STOPPED 0
+#define STATUS_ACCELERATING 1
+#define STATUS_DECELERATING 2
+#define STATUS_MAXSPEED 3
+#define STATUS_EMERGENCYSTOP 4
+
+#define MAXSPEED 0.75
+#define STOPSPEED 0.0
+
+#define ARC_PULSE_DIFFERENCE 3865
+
+#define COLOR_GREEN 1
+#define COLOR_BLUE 2
+#define COLOR_YELLOW 3
+
+#define THETA_GREEN 11
+#define THETA_YELLOW 5.5
 
 
 //FUNCTIONS
@@ -48,3 +65,18 @@ float PID(float baseValue, float proportional, float integral, float derivative,
 void ROBUSMovement_moveStraight_cm(float direction, float speed_pct, float distance_cm);
 
 void ROBUSMovement_turnOnSelf_deg(float direction, float speed_pct, float degrees);
+
+//ARC FUNCTIONS
+
+void ROBUSMovement_trigoMath(double angle, int direction);
+
+void ROBUSMovement_acceleration(double currentSpeed);
+
+void ROBUSMovement_arcPulse(int arcangle);
+
+void ROBUSMovement_arcMove(double speed_pct, int color, int arcangle, int direction);
+
+
+void ROBUSMovement_arcMoveTEST(int color, int arcangle, int direction);
+
+void ROBUSMovement_EmergencyStop();
